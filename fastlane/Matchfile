@@ -1,0 +1,5 @@
+git_url("git@github.com:nleach7/HobbyHangar-Certificates.git")
+storage_mode("git")
+type("appstore")
+app_identifier(["com.nleach.HobbyHangar"])
+username("nleach@live.com")
