@@ -8,7 +8,8 @@
 // Default settings (CI / Shared)
 HH_BUNDLE_IDENTIFIER = com.nleach.HobbyHangar
 HH_DEVELOPMENT_TEAM = ZUSG63H8U3
-HH_CODE_SIGN_STYLE = Automatic
+HH_CODE_SIGN_STYLE = Manual
+HH_PROVISIONING_PROFILE_SPECIFIER_IOS = match AppStore com.nleach.HobbyHangar
 
 // Include local user settings (gitignored)
 #include? "User.xcconfig"

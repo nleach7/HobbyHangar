@@ -108,12 +108,15 @@ HH_DEVELOPMENT_TEAM = ${TEAM_ID}
 // Bundle Identifier to allow local overrides
 // HH_BUNDLE_IDENTIFIER = ${BUNDLE_ID:-com.nleach.HobbyHangar}
 
-// Loop through available styles: Automatic, Manual
+// Code Sign Style
+// Default is set to "Manual" in HobbyHangar.xcconfig
+// Uncomment and override if needed (options: Automatic, Manual)
 // HH_CODE_SIGN_STYLE = Automatic
 
-// Provisioning Profile Specifier
-// Leave blank for Automatic Signing, or set a specific profile name (e.g. "match AppStore com.example.App")
-// HH_PROVISIONING_PROFILE_SPECIFIER = match AppStore \$(HH_BUNDLE_IDENTIFIER)
+// Provisioning Profile Specifier (iOS)
+// Default is set to "match AppStore com.nleach.HobbyHangar" in HobbyHangar.xcconfig
+// Uncomment and override if needed (e.g. "match Development com.example.App")
+// HH_PROVISIONING_PROFILE_SPECIFIER_IOS = match AppStore \$(HH_BUNDLE_IDENTIFIER)
 CONFIG_EOF
 
 	if [ -n "$BUNDLE_ID" ]; then
