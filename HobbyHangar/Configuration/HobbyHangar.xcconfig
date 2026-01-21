@@ -1,0 +1,14 @@
+//
+//  HobbyHangar.xcconfig
+//  HobbyHangar
+//
+//  Shared build settings.
+//
+
+// Default settings (CI / Shared)
+HH_BUNDLE_IDENTIFIER = com.nleach.HobbyHangar
+HH_DEVELOPMENT_TEAM = ZUSG63H8U3
+HH_CODE_SIGN_STYLE = Automatic
+
+// Include local user settings (gitignored)
+#include? "User.xcconfig"
