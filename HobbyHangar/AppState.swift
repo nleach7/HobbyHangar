@@ -6,32 +6,48 @@
 //
 
 import Foundation
+import Observation
 
-// MARK: - Protocol
-protocol ApplicationState: Equatable {
-    var system: System { get set }
+// MARK: - Tab
+enum Tab: Hashable {
+    case logbook
+    case hangar
+    case batteryTracker
+    case pilotProfile
 }
 
+// MARK: - Navigation
+struct Navigation: Equatable {
+    var selectedTab: Tab = .logbook
+}
+
+// MARK: - System
 struct System: Equatable {
     var isActive: Bool = false
 }
 
+// MARK: - Protocol
+protocol ApplicationState: AnyObject {
+    var system: System { get set }
+    var navigation: Navigation { get set }
+}
+
 // MARK: - AppState
 @MainActor
-struct AppState: @MainActor ApplicationState, Equatable {
+@Observable final class AppState: ApplicationState {
     var system: System
+    var navigation: Navigation
 
     init() {
         self.system = System()
+        self.navigation = Navigation()
     }
 }
 
-#if DEBUG
 extension AppState {
     static var preview: AppState {
-        var state = AppState()
+        let state = AppState()
         state.system.isActive = true
         return state
     }
 }
-#endif
