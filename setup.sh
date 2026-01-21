@@ -49,5 +49,82 @@ else
 	shopt -u nullglob
 fi
 
-echo "Setup complete."
+# Setup local User.xcconfig
+USER_CONFIG_PATH="HobbyHangar/Configuration/User.xcconfig"
+
+echo "Checking for User.xcconfig..."
+if [ ! -f "$USER_CONFIG_PATH" ]; then
+	echo "Creating local configuration file at $USER_CONFIG_PATH..."
+	
+	# Check for identities in the keychain
+	TEAM_ID=""
+	if command -v security >/dev/null 2>&1; then
+		echo "Checking Keychain for 'Apple Development' certificates..."
+		# Get lines containing "Apple Development", extract content between last parens inside quotes
+		POSSIBLE_IDS=$(security find-identity -v -p codesigning 2>/dev/null | grep "Apple Development" | sed -n 's/.*(\(.*\))"/\1/p' | sort -u || true)
+		
+		if [ -n "$POSSIBLE_IDS" ]; then
+			ID_COUNT=$(echo "$POSSIBLE_IDS" | wc -l | tr -d ' ')
+			if [ "$ID_COUNT" -eq 1 ]; then
+				read -r -p "Found Team ID: $POSSIBLE_IDS. Use this? [Y/n] " CONFIRM
+				if [[ ! "$CONFIRM" =~ ^[Nn] ]]; then
+					TEAM_ID="$POSSIBLE_IDS"
+				fi
+			else
+				echo "Found multiple Team IDs:"
+				echo "$POSSIBLE_IDS"
+				echo ""
+			fi
+		fi
+	fi
+
+	if [ -z "$TEAM_ID" ]; then
+		echo "To configure signing, please enter your Apple Development Team ID."
+		echo "(You can find this at https://developer.apple.com/account or by running 'security find-identity -v -p codesigning')"
+		read -r -p "Team ID (leave blank to skip): " TEAM_ID || true
+	fi
+	
+	# Prompt for Bundle ID
+	read -r -p "Bundle Identifier (leave blank to use default 'com.nleach.HobbyHangar'): " BUNDLE_ID || true
+	
+	# Create the directory if it doesn't exist
+	mkdir -p "$(dirname "$USER_CONFIG_PATH")"
+
+	cat <<CONFIG_EOF > "$USER_CONFIG_PATH"
+//
+//  User.xcconfig
+//  HobbyHangar
+//
+//  Local user settings - this file should be ignored by git.
+//
+
+// Set your development team ID here to avoid changing the project file.
+// Get your Team ID from https://developer.apple.com/account
+// or by running:
+// security find-identity -v -p codesigning
+
+HH_DEVELOPMENT_TEAM = ${TEAM_ID}
+
+// Bundle Identifier to allow local overrides
+// HH_BUNDLE_IDENTIFIER = ${BUNDLE_ID:-com.nleach.HobbyHangar}
+
+// Loop through available styles: Automatic, Manual
+// HH_CODE_SIGN_STYLE = Automatic
+
+// Provisioning Profile Specifier
+// Leave blank for Automatic Signing, or set a specific profile name (e.g. "match AppStore com.example.App")
+// HH_PROVISIONING_PROFILE_SPECIFIER = match AppStore \$(HH_BUNDLE_IDENTIFIER)
+CONFIG_EOF
+
+	if [ -n "$BUNDLE_ID" ]; then
+		# Use sed to uncomment and set the bundle ID
+		sed -i '' "s|// HH_BUNDLE_IDENTIFIER = .*|HH_BUNDLE_IDENTIFIER = $BUNDLE_ID|g" "$USER_CONFIG_PATH"
+	fi
+
+	echo "Created $USER_CONFIG_PATH."
+else
+	echo "$USER_CONFIG_PATH already exists. Skipping creation."
+fi
+
+echo "Setup complete!"
 
