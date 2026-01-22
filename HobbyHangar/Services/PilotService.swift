@@ -27,7 +27,6 @@ final class PilotService: PilotServiceable {
     }
 }
 
-#if DEBUG
 final class StubPilotService: PilotServiceable {
     private let databaseRepository: DBRepository
 
@@ -39,4 +38,3 @@ final class StubPilotService: PilotServiceable {
         return "Pilot Profile"
     }
 }
-#endif

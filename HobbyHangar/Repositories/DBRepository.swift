@@ -15,8 +15,6 @@ final class DatabaseRepository: DBRepository {
     // Database repository implementation
 }
 
-#if DEBUG
 final class StubDBRepository: DBRepository {
     // stub implementation
 }
-#endif
