@@ -11,22 +11,39 @@ import Observation
 
 @Observable final class RootViewModel {
     private let container: DIContainer
-    private let pilotService: PilotServiceable
-
-    var displayText: String?
+    let appState: AppState
 
     init(container: DIContainer) {
-
         self.container = container
 
-        guard let pilotService = container.resolve(serviceType: (any PilotServiceable).self) else {
-            fatalError("Failed to get an instance of PilotServiceable")
+        guard let appState = container.resolve(serviceType: (any ApplicationState).self) as? AppState else {
+            fatalError("Failed to get an instance of AppState")
         }
 
-        self.pilotService = pilotService
+        self.appState = appState
+    }
 
-        Task {
-            displayText = await pilotService.getText()
-        }
+    var selectedTab: Tab {
+        get { appState.navigation.selectedTab }
+        set { appState.navigation.selectedTab = newValue }
+    }
+}
+
+// MARK: - Child ViewModels
+extension RootViewModel {
+    func makeLogbookViewModel() -> LogbookViewModel {
+        .init(container: container)
+    }
+
+    func makeHangarViewModel() -> HangarViewModel {
+        .init(container: container)
+    }
+
+    func makeBatteryTrackerViewModel() -> BatteryTrackerViewModel {
+        .init(container: container)
+    }
+
+    func makePilotProfileViewModel() -> PilotProfileViewModel {
+        .init(container: container)
     }
 }

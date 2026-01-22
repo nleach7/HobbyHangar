@@ -30,8 +30,9 @@ struct HobbyHangarApp: App {
             RootView(viewModel: RootViewModel(container: diContainer))
         }
         .onChange(of: scenePhase) {
-
-            var appState = appState
+            guard let appState = appState as? AppState else {
+                return
+            }
 
             switch scenePhase {
             case .active:

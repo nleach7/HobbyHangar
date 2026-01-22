@@ -8,7 +8,7 @@
 import Foundation
 
 protocol PilotServiceable: AnyObject {
-    func getText() async -> String
+    func loadWelcomeMessage() async -> String
 }
 
 final class PilotService: PilotServiceable {
@@ -20,24 +20,23 @@ final class PilotService: PilotServiceable {
         self.appState = appState
     }
 
-    func getText() async -> String {
+    func loadWelcomeMessage() async -> String {
         // swiftlint:disable:next force_try
-        try! await Task.sleep(nanoseconds: 2_000_000_000)
-        return "Welcome to HobbyHangar"
+        try! await Task.sleep(nanoseconds: 1_000_000_000)
+        return "Pilot Profile"
     }
 }
 
 #if DEBUG
 final class StubPilotService: PilotServiceable {
-
     private let databaseRepository: DBRepository
 
     init(databaseRepository: DBRepository) {
         self.databaseRepository = databaseRepository
     }
 
-    func getText() async -> String {
-        "Stub"
+    func loadWelcomeMessage() async -> String {
+        return "Pilot Profile"
     }
 }
 #endif

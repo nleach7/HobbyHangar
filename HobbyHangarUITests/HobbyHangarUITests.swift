@@ -15,7 +15,7 @@ final class HobbyHangarUITests: XCTestCase {
         // In UI tests it is usually best to stop immediately when a failure occurs.
         continueAfterFailure = false
 
-        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
+        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run.
     }
 
     override func tearDownWithError() throws {
@@ -23,12 +23,24 @@ final class HobbyHangarUITests: XCTestCase {
     }
 
     @MainActor
-    func testExample() throws {
-        // UI tests must launch the application that they test.
+    func testTabsShowAndNavigateToStubScreens() throws {
         let app = XCUIApplication()
         app.launch()
 
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        // Default tab: Logbook
+        XCTAssertTrue(app.staticTexts["Logbook"].waitForExistence(timeout: 2))
+
+        // Hangar tab
+        openTab(named: "Hangar", in: app)
+        XCTAssertTrue(app.staticTexts["Hangar"].waitForExistence(timeout: 2))
+
+        // Batteries tab (tab label), screen label is "Battery Tracker"
+        openTab(named: "Batteries", in: app)
+        XCTAssertTrue(app.staticTexts["Battery Tracker"].waitForExistence(timeout: 2))
+
+        // Pilot Profile tab
+        openTab(named: "Pilot Profile", in: app)
+        XCTAssertTrue(app.staticTexts["Pilot Profile"].waitForExistence(timeout: 2))
     }
 
     @MainActor
@@ -37,5 +49,14 @@ final class HobbyHangarUITests: XCTestCase {
         measure(metrics: [XCTApplicationLaunchMetric()]) {
             XCUIApplication().launch()
         }
+    }
+}
+
+// MARK: - Helpers
+private extension HobbyHangarUITests {
+    func openTab(named tabName: String, in app: XCUIApplication, file: StaticString = #filePath, line: UInt = #line) {
+        let tabButton = app.tabBars.buttons[tabName]
+        XCTAssertTrue(tabButton.waitForExistence(timeout: 2), "Missing tab '\(tabName)'", file: file, line: line)
+        tabButton.tap()
     }
 }

@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Swinject
-import Combine
 
 struct DIContainer {
 
@@ -19,9 +18,7 @@ struct DIContainer {
         synchronizedResolver = container.synchronize()
 
         if useStubs {
-#if DEBUG
             bootstrapStubs()
-#endif
         } else {
             bootstrap()
         }
@@ -49,17 +46,17 @@ struct DIContainer {
     }
 }
 
-#if DEBUG
 extension DIContainer {
     static var preview: Self {
         .init(useStubs: true)
     }
 
     func bootstrapStubs() {
+        let appState = AppState()
         let dbRepository = StubDBRepository()
 
         container.register((any ApplicationState).self) { _ in
-            AppState()
+            appState
         }.inObjectScope(.container)
 
         container.register(DBRepository.self) { _ in
@@ -71,4 +68,3 @@ extension DIContainer {
         }
     }
 }
-#endif
