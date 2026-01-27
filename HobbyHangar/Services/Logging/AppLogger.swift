@@ -8,150 +8,212 @@
 import Foundation
 import Logging
 
-/// Log metadata type alias for convenience
 public typealias LogMetadata = [String: String]
 
-/// Centralized logger for the application.
-/// Uses swift-log for multi-platform compatibility with custom handlers
-/// for console output (with emoji) and PostHog analytics.
-public enum AppLogger {
+/// Protocol defining the logging interface for the application.
+public protocol AppLogger {
+    func debug(_ message: String, metadata: LogMetadata?, file: String, function: String, line: UInt)
+    func info(_ message: String, metadata: LogMetadata?, file: String, function: String, line: UInt)
+    func warning(_ message: String, metadata: LogMetadata?, file: String, function: String, line: UInt)
+    func error(_ message: String, metadata: LogMetadata?, file: String, function: String, line: UInt)
+    func critical(_ message: String, metadata: LogMetadata?, file: String, function: String, line: UInt)
+    func analytics(event: String, properties: [String: Any]?, file: String, function: String, line: UInt)
+    func screenView(_ screenName: String, properties: [String: Any]?, file: String, function: String, line: UInt)
+}
 
-    /// The shared logger instance
-    public private(set) static var logger: Logger = {
-        var log = Logger(label: "com.hobbyhangar.app")
-        log.logLevel = .debug
-        return log
-    }()
-
-    /// Initialize the logging system with custom handlers.
-    /// Call this once at app startup before any logging occurs.
-    public static func bootstrap() {
-        LoggingSystem.bootstrap { label in
-            MultiplexLogHandler([
-                EmojiConsoleLogHandler(label: label),
-                PostHogLogHandler(label: label)
-            ])
-        }
-
-        // Recreate the logger after bootstrap
-        logger = Logger(label: "com.hobbyhangar.app")
-
-        #if DEBUG
-        logger.logLevel = .debug
-        #else
-        logger.logLevel = .info
-        #endif
-
-        logger.info("Logging system initialized")
-    }
-
-    // MARK: - Convenience Methods
-
-    /// Log a debug message
-    public static func debug(
+public extension AppLogger {
+    func debug(
         _ message: String,
         metadata: LogMetadata? = nil,
         file: String = #file,
         function: String = #function,
         line: UInt = #line
     ) {
-        logger.debug("\(message)", metadata: convertMetadata(metadata), file: file, function: function, line: line)
+        debug(message, metadata: metadata, file: file, function: function, line: line)
     }
 
-    /// Log an info message
-    public static func info(
+    func info(
         _ message: String,
         metadata: LogMetadata? = nil,
         file: String = #file,
         function: String = #function,
         line: UInt = #line
     ) {
-        logger.info("\(message)", metadata: convertMetadata(metadata), file: file, function: function, line: line)
+        info(message, metadata: metadata, file: file, function: function, line: line)
     }
 
-    /// Log a warning message
-    public static func warning(
+    func warning(
         _ message: String,
         metadata: LogMetadata? = nil,
         file: String = #file,
         function: String = #function,
         line: UInt = #line
     ) {
-        logger.warning("\(message)", metadata: convertMetadata(metadata), file: file, function: function, line: line)
+        warning(message, metadata: metadata, file: file, function: function, line: line)
     }
 
-    /// Log an error message
-    public static func error(
+    func error(
         _ message: String,
         metadata: LogMetadata? = nil,
         file: String = #file,
         function: String = #function,
         line: UInt = #line
     ) {
-        logger.error("\(message)", metadata: convertMetadata(metadata), file: file, function: function, line: line)
+        error(message, metadata: metadata, file: file, function: function, line: line)
     }
 
-    /// Log a critical message
-    public static func critical(
+    func critical(
         _ message: String,
         metadata: LogMetadata? = nil,
         file: String = #file,
         function: String = #function,
         line: UInt = #line
     ) {
-        logger.critical("\(message)", metadata: convertMetadata(metadata), file: file, function: function, line: line)
+        critical(message, metadata: metadata, file: file, function: function, line: line)
     }
 
-    // MARK: - Private Helpers
-
-    private static func convertMetadata(_ metadata: LogMetadata?) -> Logger.Metadata? {
-        guard let metadata = metadata else { return nil }
-        return metadata.mapValues { .string($0) }
-    }
-
-    // MARK: - Analytics
-
-    /// Track an analytics event through PostHog
-    public static func analytics(
+    func analytics(
         event: String,
         properties: [String: Any]? = nil,
         file: String = #file,
         function: String = #function,
         line: UInt = #line
     ) {
-        var metadata: Logger.Metadata = [
-            "analytics_event": .string(event),
-            "analytics_type": .string("event")
-        ]
-
-        if let properties = properties {
-            for (key, value) in properties {
-                metadata["prop_\(key)"] = .string(String(describing: value))
-            }
-        }
-
-        logger.notice("📊 \(event)", metadata: metadata, file: file, function: function, line: line)
+        analytics(event: event, properties: properties, file: file, function: function, line: line)
     }
 
-    /// Track a screen view through PostHog
-    public static func screenView(
+    func screenView(
         _ screenName: String,
         properties: [String: Any]? = nil,
         file: String = #file,
         function: String = #function,
         line: UInt = #line
     ) {
+        screenView(screenName, properties: properties, file: file, function: function, line: line)
+    }
+}
+
+/// Centralized logger for the application.
+public final class ApplicationLogger: AppLogger {
+
+    private let bundleId: String
+    private var logger: Logger
+
+    public init(isDebug: Bool) {
+
+        let bundleId = Bundle.main.bundleIdentifier!
+        self.bundleId = bundleId
+
+        LoggingSystem.bootstrap { label in
+            MultiplexLogHandler([
+                ConsoleLogHandler(bundleId: bundleId, category: label),
+                PostHogLogHandler()
+            ])
+        }
+
+        logger = Logger(label: bundleId)
+        logger.logLevel = isDebug ? .trace : .warning
+    }
+
+    /// Log a debug message
+    public func debug(
+        _ message: String,
+        metadata: LogMetadata?,
+        file: String,
+        function: String,
+        line: UInt
+    ) {
+        logger.debug("\(message)", metadata: convertMetadata(metadata), file: file, function: function, line: line)
+    }
+
+    /// Log an info message
+    public func info(
+        _ message: String,
+        metadata: LogMetadata?,
+        file: String,
+        function: String,
+        line: UInt
+    ) {
+        logger.info("\(message)", metadata: convertMetadata(metadata), file: file, function: function, line: line)
+    }
+
+    /// Log a warning message
+    public func warning(
+        _ message: String,
+        metadata: LogMetadata?,
+        file: String,
+        function: String,
+        line: UInt
+    ) {
+        logger.warning("\(message)", metadata: convertMetadata(metadata), file: file, function: function, line: line)
+    }
+
+    /// Log an error message
+    public func error(
+        _ message: String,
+        metadata: LogMetadata?,
+        file: String,
+        function: String,
+        line: UInt
+    ) {
+        logger.error("\(message)", metadata: convertMetadata(metadata), file: file, function: function, line: line)
+    }
+
+    /// Log a critical message
+    public func critical(
+        _ message: String,
+        metadata: LogMetadata?,
+        file: String,
+        function: String,
+        line: UInt
+    ) {
+        logger.critical("\(message)", metadata: convertMetadata(metadata), file: file, function: function, line: line)
+    }
+
+    private func convertMetadata(_ metadata: LogMetadata?) -> Logger.Metadata? {
+        guard let metadata else { return nil }
+        return metadata.mapValues { .string($0) }
+    }
+
+    // MARK: - Analytics
+
+    /// Track an analytics event through PostHog
+    public func analytics(
+        event: String,
+        properties: [String: Any]?,
+        file: String,
+        function: String,
+        line: UInt
+    ) {
+        var metadata: Logger.Metadata = [
+            "analytics_event": .string(event),
+            "analytics_type": .string("event")
+        ]
+
+        if let properties {
+            metadata.merge(properties.mapValues { .string("\($0)") }) { (_, new) in new }
+        }
+
+        logger.notice("\(event)", metadata: metadata, file: file, function: function, line: line)
+    }
+
+    /// Track a screen view through PostHog
+    public func screenView(
+        _ screenName: String,
+        properties: [String: Any]?,
+        file: String,
+        function: String,
+        line: UInt
+    ) {
         var metadata: Logger.Metadata = [
             "analytics_event": .string(screenName),
             "analytics_type": .string("screen")
         ]
 
-        if let properties = properties {
-            for (key, value) in properties {
-                metadata["prop_\(key)"] = .string(String(describing: value))
-            }
+        if let properties {
+            metadata.merge(properties.mapValues { .string("\($0)") }) { (_, new) in new }
         }
 
-        logger.notice("📱 Screen: \(screenName)", metadata: metadata, file: file, function: function, line: line)
+        logger.notice("Screen: \(screenName)", metadata: metadata, file: file, function: function, line: line)
     }
 }

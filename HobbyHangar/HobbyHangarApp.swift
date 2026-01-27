@@ -14,23 +14,31 @@ struct HobbyHangarApp: App {
 
     private let diContainer: DIContainer
     private var appState: any ApplicationState
+    private let logger: AppLogger
+    private let postHogConfig: PostHogService
 
     init() {
-        // Initialize logging system first
-        PostHogConfiguration.configure()
-        AppLogger.bootstrap()
-
-        AppLogger.info("App initializing...")
-
         diContainer = DIContainer()
 
+        guard let logger = diContainer.resolve(serviceType: AppLogger.self) else {
+            fatalError("Failed to get an instance of AppLogger")
+        }
+
         guard let appState = diContainer.resolve(serviceType: (any ApplicationState).self) else {
-            AppLogger.critical("Failed to get an instance ApplicationState")
+            logger.critical("Failed to get an instance ApplicationState")
             fatalError("Failed to get an instance ApplicationState")
         }
 
+        guard let postHogConfig = diContainer.resolve(serviceType: PostHogService.self) else {
+            logger.critical("Failed to get an instance of PostHogService")
+            fatalError("Failed to get an instance of PostHogService")
+        }
+
+        self.logger = logger
         self.appState = appState
-        AppLogger.info("App initialization complete")
+        self.postHogConfig = postHogConfig
+
+        logger.info("App initialization complete")
     }
 
     var body: some Scene {
@@ -45,19 +53,20 @@ struct HobbyHangarApp: App {
             switch scenePhase {
             case .active:
                 appState.system.isActive = true
-                AppLogger.debug("App became active")
+                logger.debug("App became active")
 
             case .background:
                 appState.system.isActive = false
-                AppLogger.debug("App entered background")
+                postHogConfig.flush()
+                logger.debug("App entered background")
 
             case .inactive:
                 appState.system.isActive = false
-                AppLogger.debug("App became inactive")
+                logger.debug("App became inactive")
 
             @unknown default:
                 appState.system.isActive = false
-                AppLogger.warning("Unknown scene phase")
+                logger.warning("Unknown scene phase")
             }
         }
     }

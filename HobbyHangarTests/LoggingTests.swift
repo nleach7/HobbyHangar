@@ -83,37 +83,37 @@ final class MockLogHandler: LogHandler, @unchecked Sendable {
     }
 }
 
-// MARK: - EmojiConsoleLogHandler Tests
+// MARK: - ConsoleLogHandler Tests
 
-@Suite("EmojiConsoleLogHandler Tests")
-struct EmojiConsoleLogHandlerTests {
+@Suite("ConsoleLogHandler Tests")
+struct ConsoleLogHandlerTests {
 
-    @Test("Handler initializes with correct label")
-    func initializesWithLabel() {
-        let handler = EmojiConsoleLogHandler(label: "test.label")
-        #expect(handler.logLevel == .debug)
+    @Test("Handler initializes with correct parameters")
+    func initializesWithParameters() {
+        let handler = ConsoleLogHandler(bundleId: "com.test", category: "test")
+        #expect(handler.logLevel == .trace)
         #expect(handler.metadata.isEmpty)
     }
 
     @Test("Handler supports metadata subscript")
     func metadataSubscript() {
-        var handler = EmojiConsoleLogHandler(label: "test")
-        handler[metadataKey: "testKey"] = .string("testValue")
-        #expect(handler[metadataKey: "testKey"] == .string("testValue"))
+        var handler = ConsoleLogHandler(bundleId: "com.test", category: "test")
+        handler[metadataKey: "testKey"] = Logger.MetadataValue.string("testValue")
+        #expect(handler[metadataKey: "testKey"] == Logger.MetadataValue.string("testValue"))
     }
 
     @Test("Handler log level can be changed")
     func logLevelChange() {
-        var handler = EmojiConsoleLogHandler(label: "test")
+        var handler = ConsoleLogHandler(bundleId: "com.test", category: "test")
         handler.logLevel = .warning
         #expect(handler.logLevel == .warning)
     }
 
     @Test("Handler metadata can be set")
     func metadataSet() {
-        var handler = EmojiConsoleLogHandler(label: "test")
-        handler.metadata = ["key1": .string("value1")]
-        #expect(handler.metadata["key1"] == .string("value1"))
+        var handler = ConsoleLogHandler(bundleId: "com.test", category: "test")
+        handler.metadata = ["key1": "value1"]
+        #expect(handler.metadata["key1"] == "value1")
     }
 }
 
@@ -124,21 +124,21 @@ struct PostHogLogHandlerTests {
 
     @Test("Handler initializes with correct default log level")
     func initializesWithDefaults() {
-        let handler = PostHogLogHandler(label: "test.posthog")
+        let handler = PostHogLogHandler()
         #expect(handler.logLevel == .info)
         #expect(handler.metadata.isEmpty)
     }
 
     @Test("Handler supports metadata subscript")
     func metadataSubscript() {
-        var handler = PostHogLogHandler(label: "test")
-        handler[metadataKey: "userId"] = .string("123")
-        #expect(handler[metadataKey: "userId"] == .string("123"))
+        var handler = PostHogLogHandler()
+        handler[metadataKey: "userId"] = Logger.MetadataValue.string("123")
+        #expect(handler[metadataKey: "userId"] == Logger.MetadataValue.string("123"))
     }
 
     @Test("Handler log level can be changed")
     func logLevelChange() {
-        var handler = PostHogLogHandler(label: "test")
+        var handler = PostHogLogHandler()
         handler.logLevel = .error
         #expect(handler.logLevel == .error)
     }
@@ -187,7 +187,7 @@ struct LoggerIntegrationTests {
         let mockHandler = MockLogHandler()
         let logger = Logger(label: "test.metadata") { _ in mockHandler }
 
-        logger.info("Message with metadata", metadata: ["key": .string("value"), "number": .string("42")])
+        logger.info("Message with metadata", metadata: ["key": "value", "number": "42"])
 
         let entry = mockHandler.lastEntry
         #expect(entry?.metadata?["key"] == .string("value"))
@@ -226,42 +226,6 @@ struct LoggerIntegrationTests {
     }
 }
 
-// MARK: - MultiplexLogHandler Tests
-
-@Suite("MultiplexLogHandler Tests")
-struct MultiplexLogHandlerTests {
-
-    @Test("MultiplexLogHandler sends to all handlers")
-    func sendsToAllHandlers() {
-        let handler1 = MockLogHandler()
-        let handler2 = MockLogHandler()
-
-        let multiplexHandler = MultiplexLogHandler([handler1, handler2])
-        let logger = Logger(label: "test.multiplex") { _ in multiplexHandler }
-
-        logger.info("Broadcast message")
-
-        #expect(handler1.entries.count == 1)
-        #expect(handler2.entries.count == 1)
-        #expect(handler1.lastEntry?.message == "Broadcast message")
-        #expect(handler2.lastEntry?.message == "Broadcast message")
-    }
-
-    @Test("MultiplexLogHandler preserves log level for all handlers")
-    func preservesLogLevel() {
-        let handler1 = MockLogHandler()
-        let handler2 = MockLogHandler()
-
-        let multiplexHandler = MultiplexLogHandler([handler1, handler2])
-        let logger = Logger(label: "test.multiplex.level") { _ in multiplexHandler }
-
-        logger.error("Error message")
-
-        #expect(handler1.lastEntry?.level == .error)
-        #expect(handler2.lastEntry?.level == .error)
-    }
-}
-
 // MARK: - Analytics Metadata Tests
 
 @Suite("Analytics Metadata Tests")
@@ -273,9 +237,9 @@ struct AnalyticsMetadataTests {
         let logger = Logger(label: "test.analytics") { _ in mockHandler }
 
         let metadata: Logger.Metadata = [
-            "analytics_event": .string("button_clicked"),
-            "analytics_type": .string("event"),
-            "prop_screen": .string("home")
+            "analytics_event": "button_clicked",
+            "analytics_type": "event",
+            "prop_screen": "home"
         ]
 
         logger.notice("Analytics event", metadata: metadata)
@@ -292,8 +256,8 @@ struct AnalyticsMetadataTests {
         let logger = Logger(label: "test.screen") { _ in mockHandler }
 
         let metadata: Logger.Metadata = [
-            "analytics_event": .string("HomeScreen"),
-            "analytics_type": .string("screen")
+            "analytics_event": "HomeScreen",
+            "analytics_type": "screen"
         ]
 
         logger.notice("Screen view", metadata: metadata)

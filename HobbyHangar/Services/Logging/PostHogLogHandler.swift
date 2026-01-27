@@ -15,10 +15,8 @@ public struct PostHogLogHandler: LogHandler {
     public var logLevel: Logger.Level = .info
     public var metadata: Logger.Metadata = [:]
 
-    private let label: String
-
-    public init(label: String) {
-        self.label = label
+    private var postHog: PostHogSDK {
+        PostHogSDK.shared
     }
 
     public subscript(metadataKey key: String) -> Logger.Metadata.Value? {
@@ -43,13 +41,12 @@ public struct PostHogLogHandler: LogHandler {
            let eventName = mergedMetadata["analytics_event"] {
 
             let eventNameString = String(describing: eventName)
-            let properties = extractProperties(from: mergedMetadata)
 
             switch String(describing: analyticsType) {
             case "screen":
-                PostHogSDK.shared.screen(eventNameString, properties: properties)
+                postHog.screen(eventNameString, properties: mergedMetadata)
             case "event":
-                PostHogSDK.shared.capture(eventNameString, properties: properties)
+                postHog.capture(eventNameString, properties: mergedMetadata)
             default:
                 break
             }
@@ -68,11 +65,8 @@ public struct PostHogLogHandler: LogHandler {
                 "line": Int(line)
             ]
 
-            // Add any additional metadata
             for (key, value) in mergedMetadata {
-                if !key.starts(with: "analytics_") && !key.starts(with: "prop_") {
-                    properties[key] = String(describing: value)
-                }
+                properties[key] = String(describing: value)
             }
 
             PostHogSDK.shared.capture(
@@ -80,19 +74,5 @@ public struct PostHogLogHandler: LogHandler {
                 properties: properties
             )
         }
-    }
-
-    // MARK: - Private
-
-    /// Extract properties from metadata (keys starting with "prop_")
-    private func extractProperties(from metadata: Logger.Metadata) -> [String: Any] {
-        var properties: [String: Any] = [:]
-
-        for (key, value) in metadata where key.starts(with: "prop_") {
-            let propertyKey = String(key.dropFirst(5)) // Remove "prop_" prefix
-            properties[propertyKey] = String(describing: value)
-        }
-
-        return properties
     }
 }

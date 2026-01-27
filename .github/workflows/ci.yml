@@ -10,6 +10,7 @@ env:
   PROJECT: HobbyHangar.xcodeproj
   SCHEME: HobbyHangar
   SIMULATOR: "iPhone 17"
+  POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
 
 jobs:
   build-and-test:
@@ -27,6 +28,15 @@ jobs:
       
       - name: Install xcpretty
         run: gem install xcpretty
+
+      - name: Inject PostHog API key into Info.plist (if set)
+        run: |
+          if [ -n "$POSTHOG_API_KEY" ]; then
+            /usr/libexec/PlistBuddy -c "Set :POSTHOG_API_KEY \"$POSTHOG_API_KEY\"" "HobbyHangar/Info.plist"
+            echo "POSTHOG_API_KEY set in Info.plist"
+          else
+            echo "POSTHOG_API_KEY not set, skipping injection"
+          fi
 
       - name: Run unit + UI tests
         run: |
@@ -61,6 +71,15 @@ jobs:
 
       - name: Increment Build Number
         run: xcrun agvtool new-version ${{ github.run_number }}
+
+      - name: Inject PostHog API key into Info.plist (if set)
+        run: |
+          if [ -n "$POSTHOG_API_KEY" ]; then
+            /usr/libexec/PlistBuddy -c "Set :POSTHOG_API_KEY \"$POSTHOG_API_KEY\"" "HobbyHangar/Info.plist"
+            echo "POSTHOG_API_KEY set in Info.plist"
+          else
+            echo "POSTHOG_API_KEY not set, skipping injection"
+          fi
 
       - name: Build & Upload to TestFlight (fastlane)
         env:
