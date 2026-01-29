@@ -26,7 +26,7 @@ struct PilotProfileView: View {
         }
         .navigationTitle("Pilot Profile")
         .onAppear {
-            viewModel.loadWelcomeMessage()
+            viewModel.onAppear()
         }
     }
 }

@@ -7,7 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5242ACC42F27D7D20038E256 /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 52AA1E902F45B003005A72B9 /* Logging */; };
 		52AA1E882F1ABDF6005A72B9 /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = 52AA1E872F1ABDF6005A72B9 /* Swinject */; };
+		52AA1E8A2F45B001005A72B9 /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 52AA1E892F45B001005A72B9 /* Logging */; };
+		52AA1E8C2F45B002005A72B9 /* PostHog in Frameworks */ = {isa = PBXBuildFile; productRef = 52AA1E8B2F45B002005A72B9 /* PostHog */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +73,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				52AA1E882F1ABDF6005A72B9 /* Swinject in Frameworks */,
+				52AA1E8A2F45B001005A72B9 /* Logging in Frameworks */,
+				52AA1E8C2F45B002005A72B9 /* PostHog in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,6 +82,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5242ACC42F27D7D20038E256 /* Logging in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,6 +138,8 @@
 			name = HobbyHangar;
 			packageProductDependencies = (
 				52AA1E872F1ABDF6005A72B9 /* Swinject */,
+				52AA1E892F45B001005A72B9 /* Logging */,
+				52AA1E8B2F45B002005A72B9 /* PostHog */,
 			);
 			productName = HobbyHangar;
 			productReference = 52AA1DC62F19A802005A72B9 /* HobbyHangar.app */;
@@ -155,6 +163,7 @@
 			);
 			name = HobbyHangarTests;
 			packageProductDependencies = (
+				52AA1E902F45B003005A72B9 /* Logging */,
 			);
 			productName = HobbyHangarTests;
 			productReference = 52AA1DD72F19A803005A72B9 /* HobbyHangarTests.xctest */;
@@ -218,6 +227,8 @@
 			packageReferences = (
 				52AA1E282F19B17D005A72B9 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
 				52AA1E862F1ABDF6005A72B9 /* XCRemoteSwiftPackageReference "Swinject" */,
+				52AA1E8D2F45B001005A72B9 /* XCRemoteSwiftPackageReference "swift-log" */,
+				52AA1E8E2F45B002005A72B9 /* XCRemoteSwiftPackageReference "posthog-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 52AA1DC72F19A802005A72B9 /* Products */;
@@ -310,6 +321,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = D552ZZ3696;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZUSG63H8U3;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = ZUSG63H8U3;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -366,6 +378,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = D552ZZ3696;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = ZUSG63H8U3;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = ZUSG63H8U3;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -540,12 +553,13 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HobbyHangar.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/HobbyHangar";
 				XROS_DEPLOYMENT_TARGET = 26.2;
 			};
@@ -566,12 +580,13 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HobbyHangar.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/HobbyHangar";
 				XROS_DEPLOYMENT_TARGET = 26.2;
 			};
@@ -591,12 +606,13 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = HobbyHangar;
 				XROS_DEPLOYMENT_TARGET = 26.2;
 			};
@@ -616,12 +632,13 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = HobbyHangar;
 				XROS_DEPLOYMENT_TARGET = 26.2;
 			};
@@ -685,6 +702,22 @@
 				minimumVersion = 2.10.0;
 			};
 		};
+		52AA1E8D2F45B001005A72B9 /* XCRemoteSwiftPackageReference "swift-log" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-log";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.0;
+			};
+		};
+		52AA1E8E2F45B002005A72B9 /* XCRemoteSwiftPackageReference "posthog-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/PostHog/posthog-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -697,6 +730,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 52AA1E862F1ABDF6005A72B9 /* XCRemoteSwiftPackageReference "Swinject" */;
 			productName = Swinject;
+		};
+		52AA1E892F45B001005A72B9 /* Logging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 52AA1E8D2F45B001005A72B9 /* XCRemoteSwiftPackageReference "swift-log" */;
+			productName = Logging;
+		};
+		52AA1E8B2F45B002005A72B9 /* PostHog */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 52AA1E8E2F45B002005A72B9 /* XCRemoteSwiftPackageReference "posthog-ios" */;
+			productName = PostHog;
+		};
+		52AA1E902F45B003005A72B9 /* Logging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 52AA1E8D2F45B001005A72B9 /* XCRemoteSwiftPackageReference "swift-log" */;
+			productName = Logging;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -1,6 +1,24 @@
 {
-  "originHash" : "f2cf43defddfff4eac7fb50cd3f27882c96328b2af10e111f1b2d605adec94c3",
+  "originHash" : "eb6ce51eca8308fd48dc255dc1da461fddf7fc7326c7036ba25a108241d1493f",
   "pins" : [
+    {
+      "identity" : "posthog-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/PostHog/posthog-ios",
+      "state" : {
+        "revision" : "d16f883ff5ba8d279f74e2b6d0a0463e1624f3bc",
+        "version" : "3.38.0"
+      }
+    },
+    {
+      "identity" : "swift-log",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-log",
+      "state" : {
+        "revision" : "2778fd4e5a12a8aaa30a3ee8285f4ce54c5f3181",
+        "version" : "1.9.1"
+      }
+    },
     {
       "identity" : "swiftlintplugins",
       "kind" : "remoteSourceControl",
