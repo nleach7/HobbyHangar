@@ -29,7 +29,7 @@ jobs:
       - name: Install xcpretty
         run: gem install xcpretty
 
-      - name: Inject PostHog API key into Info.plist (if set)
+      - name: Inject PostHog API key into Info.plist
         run: |
           if [ -n "$POSTHOG_API_KEY" ]; then
             /usr/libexec/PlistBuddy -c "Set :POSTHOG_API_KEY \"$POSTHOG_API_KEY\"" "HobbyHangar/Info.plist"
@@ -41,11 +41,14 @@ jobs:
       - name: Run unit + UI tests
         run: |
           set -o pipefail
+          PARALLEL_WORKERS=$(sysctl -n hw.logicalcpu)
           xcodebuild \
             -project "$PROJECT" \
             -scheme "$SCHEME" \
             -destination "platform=iOS Simulator,name=$SIMULATOR" \
             -skipPackagePluginValidation \
+            -parallel-testing-enabled YES \
+            -parallel-testing-worker-count "$PARALLEL_WORKERS" \
             clean test | xcpretty
     timeout-minutes: 45
 
@@ -72,7 +75,7 @@ jobs:
       - name: Increment Build Number
         run: xcrun agvtool new-version ${{ github.run_number }}
 
-      - name: Inject PostHog API key into Info.plist (if set)
+      - name: Inject PostHog API key into Info.plist
         run: |
           if [ -n "$POSTHOG_API_KEY" ]; then
             /usr/libexec/PlistBuddy -c "Set :POSTHOG_API_KEY \"$POSTHOG_API_KEY\"" "HobbyHangar/Info.plist"
