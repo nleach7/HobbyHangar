@@ -41,20 +41,11 @@ jobs:
       - name: Run unit + UI tests
         run: |
           set -o pipefail
-          xcrun simctl shutdown all || true
-          xcrun simctl erase all || true
-          sudo pkill -9 com.apple.CoreSimulator.CoreSimulatorService || true
-          sleep 2
-          PARALLEL_WORKERS=$(sysctl -n hw.logicalcpu)
-          if [ "$PARALLEL_WORKERS" -gt 4 ]; then PARALLEL_WORKERS=4; fi
-          echo "Using $PARALLEL_WORKERS parallel workers for testing"
           xcodebuild \
             -project "$PROJECT" \
             -scheme "$SCHEME" \
             -destination "platform=iOS Simulator,name=$SIMULATOR" \
             -skipPackagePluginValidation \
-            -parallel-testing-enabled YES \
-            -parallel-testing-worker-count "$PARALLEL_WORKERS" \
             clean test | xcpretty
     timeout-minutes: 45
 
