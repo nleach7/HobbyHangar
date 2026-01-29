@@ -5,7 +5,6 @@
 //  Created by Nick Leach on 1/15/26.
 //
 
-import SwiftUI
 import Swinject
 
 struct DIContainer {
@@ -25,8 +24,23 @@ struct DIContainer {
     }
 
     func bootstrap() {
+        #if DEBUG
+        let logger = ApplicationLogger(isDebug: true)
+        #else
+        let logger = ApplicationLogger(isDebug: false)
+        #endif
+
         let appState = AppState()
         let dbRepository = DatabaseRepository()
+        let postHogConfig = PostHog()
+
+        container.register(AppLogger.self) { _ in
+            logger
+        }.inObjectScope(.transient)
+
+        container.register(PostHogService.self) { _ in
+            postHogConfig
+        }.inObjectScope(.container)
 
         container.register((any ApplicationState).self) { _ in
             appState
