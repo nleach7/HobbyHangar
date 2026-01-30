@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FactoryKit
 
 struct PilotProfileView: View {
     @Bindable private var viewModel: PilotProfileViewModel
@@ -26,13 +27,15 @@ struct PilotProfileView: View {
         }
         .navigationTitle("Pilot Profile")
         .onAppear {
-            viewModel.onAppear()
+            viewModel.loadWelcomeMessage()
         }
     }
 }
 
 #Preview {
     NavigationStack {
-        PilotProfileView(viewModel: .init(container: .preview))
+        PilotProfileView(viewModel: .init())
+    }.task {
+        Container.shared.setupPreviewMocks()
     }
 }

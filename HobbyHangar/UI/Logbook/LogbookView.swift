@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FactoryKit
 
 struct LogbookView: View {
     @Bindable private var viewModel: LogbookViewModel
@@ -23,6 +24,8 @@ struct LogbookView: View {
 
 #Preview {
     NavigationStack {
-        LogbookView(viewModel: .init(container: .preview))
+        LogbookView(viewModel: .init())
+    }.task {
+        Container.shared.setupPreviewMocks()
     }
 }

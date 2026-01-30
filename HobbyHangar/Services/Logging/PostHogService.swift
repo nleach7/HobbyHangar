@@ -9,7 +9,7 @@ import Foundation
 import PostHog
 
 /// Protocol defining the PostHog analytics service interface.
-public protocol PostHogService {
+public protocol PostHogServiceable {
     /// Identify a user for analytics tracking
     func identify(userId: String, properties: [String: Any]?)
 
@@ -23,7 +23,7 @@ public protocol PostHogService {
     func appWillTerminate()
 }
 
-extension PostHogService {
+extension PostHogServiceable {
     /// Identify a user without additional properties
     public func identify(userId: String) {
         identify(userId: userId, properties: nil)
@@ -31,7 +31,7 @@ extension PostHogService {
 }
 
 /// Manages PostHog SDK configuration and lifecycle.
-public final class PostHog: PostHogService {
+public final class PostHogService: PostHogServiceable {
 
     private let postHog: PostHogSDK
     private let host = "https://us.i.posthog.com"
@@ -43,22 +43,16 @@ public final class PostHog: PostHogService {
         return "debug-key"
     }
 
-    public init() {
+    public init(isDebug: Bool) {
         self.postHog = PostHogSDK.shared
-        setupPostHog()
+        setupPostHog(isDebug: isDebug)
     }
 
-    private func setupPostHog() {
+    private func setupPostHog(isDebug: Bool) {
         let config = PostHogConfig(apiKey: apiKey, host: host)
 
-        #if DEBUG
-        // In debug, analytics are disabled by default
-        config.debug = true
-        config.optOut = true
-        #else
-        config.debug = false
-        config.optOut = false
-        #endif
+        config.debug = isDebug
+        config.optOut = isDebug
 
         config.captureApplicationLifecycleEvents = true
         config.captureScreenViews = false

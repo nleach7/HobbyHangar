@@ -7,15 +7,12 @@
 
 import Foundation
 import Observation
+import FactoryKit
 
 @Observable final class LogbookViewModel {
     private let appState: AppState
 
-    init(container: DIContainer) {
-        guard let appState = container.resolve(serviceType: (any ApplicationState).self) as? AppState else {
-            fatalError("Failed to get an instance of AppState")
-        }
-
-        self.appState = appState
+    init() {
+        self.appState = Container.shared.appState()
     }
 }

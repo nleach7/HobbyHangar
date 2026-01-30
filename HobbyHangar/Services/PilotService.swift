@@ -13,9 +13,9 @@ protocol PilotServiceable: AnyObject {
 
 final class PilotService: PilotServiceable {
     private let databaseRepository: DBRepository
-    private let appState: any ApplicationState
+    private let appState: AppState
 
-    init(databaseRepository: DBRepository, appState: any ApplicationState) {
+    init(databaseRepository: DBRepository, appState: AppState) {
         self.databaseRepository = databaseRepository
         self.appState = appState
     }

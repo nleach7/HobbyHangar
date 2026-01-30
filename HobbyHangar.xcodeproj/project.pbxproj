@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5241DC062F2D31790098E6FE /* FactoryKit in Frameworks */ = {isa = PBXBuildFile; productRef = 52AA1E8F3F45B003005A72B9 /* FactoryKit */; };
 		5242ACC42F27D7D20038E256 /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 52AA1E902F45B003005A72B9 /* Logging */; };
-		52AA1E882F1ABDF6005A72B9 /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = 52AA1E872F1ABDF6005A72B9 /* Swinject */; };
 		52AA1E8A2F45B001005A72B9 /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 52AA1E892F45B001005A72B9 /* Logging */; };
 		52AA1E8C2F45B002005A72B9 /* PostHog in Frameworks */ = {isa = PBXBuildFile; productRef = 52AA1E8B2F45B002005A72B9 /* PostHog */; };
 /* End PBXBuildFile section */
@@ -72,7 +72,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				52AA1E882F1ABDF6005A72B9 /* Swinject in Frameworks */,
+				5241DC062F2D31790098E6FE /* FactoryKit in Frameworks */,
 				52AA1E8A2F45B001005A72B9 /* Logging in Frameworks */,
 				52AA1E8C2F45B002005A72B9 /* PostHog in Frameworks */,
 			);
@@ -137,8 +137,8 @@
 			);
 			name = HobbyHangar;
 			packageProductDependencies = (
-				52AA1E872F1ABDF6005A72B9 /* Swinject */,
 				52AA1E892F45B001005A72B9 /* Logging */,
+				52AA1E8F3F45B003005A72B9 /* FactoryKit */,
 				52AA1E8B2F45B002005A72B9 /* PostHog */,
 			);
 			productName = HobbyHangar;
@@ -226,7 +226,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				52AA1E282F19B17D005A72B9 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
-				52AA1E862F1ABDF6005A72B9 /* XCRemoteSwiftPackageReference "Swinject" */,
+				52AA1E8F2F45B003005A72B9 /* XCRemoteSwiftPackageReference "Factory" */,
 				52AA1E8D2F45B001005A72B9 /* XCRemoteSwiftPackageReference "swift-log" */,
 				52AA1E8E2F45B002005A72B9 /* XCRemoteSwiftPackageReference "posthog-ios" */,
 			);
@@ -694,14 +694,6 @@
 				minimumVersion = 0.63.1;
 			};
 		};
-		52AA1E862F1ABDF6005A72B9 /* XCRemoteSwiftPackageReference "Swinject" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Swinject/Swinject";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.10.0;
-			};
-		};
 		52AA1E8D2F45B001005A72B9 /* XCRemoteSwiftPackageReference "swift-log" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-log";
@@ -718,6 +710,14 @@
 				minimumVersion = 3.0.0;
 			};
 		};
+		52AA1E8F2F45B003005A72B9 /* XCRemoteSwiftPackageReference "Factory" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hmlongco/Factory";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -725,11 +725,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 52AA1E282F19B17D005A72B9 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
 			productName = "plugin:SwiftLintBuildToolPlugin";
-		};
-		52AA1E872F1ABDF6005A72B9 /* Swinject */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 52AA1E862F1ABDF6005A72B9 /* XCRemoteSwiftPackageReference "Swinject" */;
-			productName = Swinject;
 		};
 		52AA1E892F45B001005A72B9 /* Logging */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -740,6 +735,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 52AA1E8E2F45B002005A72B9 /* XCRemoteSwiftPackageReference "posthog-ios" */;
 			productName = PostHog;
+		};
+		52AA1E8F3F45B003005A72B9 /* FactoryKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 52AA1E8F2F45B003005A72B9 /* XCRemoteSwiftPackageReference "Factory" */;
+			productName = FactoryKit;
 		};
 		52AA1E902F45B003005A72B9 /* Logging */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FactoryKit
 
 struct HangarView: View {
     @Bindable private var viewModel: HangarViewModel
@@ -23,6 +24,8 @@ struct HangarView: View {
 
 #Preview {
     NavigationStack {
-        HangarView(viewModel: .init(container: .preview))
+        HangarView(viewModel: .init())
+    }.task {
+        Container.shared.setupPreviewMocks()
     }
 }
