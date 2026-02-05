@@ -11,6 +11,7 @@
 		5242ACC42F27D7D20038E256 /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 52AA1E902F45B003005A72B9 /* Logging */; };
 		52AA1E8A2F45B001005A72B9 /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 52AA1E892F45B001005A72B9 /* Logging */; };
 		52AA1E8C2F45B002005A72B9 /* PostHog in Frameworks */ = {isa = PBXBuildFile; productRef = 52AA1E8B2F45B002005A72B9 /* PostHog */; };
+		52CUCKOO12F46A001005A72B9 /* Cuckoo in Frameworks */ = {isa = PBXBuildFile; productRef = 52CUCKOO22F46A001005A72B9 /* Cuckoo */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +84,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5242ACC42F27D7D20038E256 /* Logging in Frameworks */,
+				52CUCKOO12F46A001005A72B9 /* Cuckoo in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -149,6 +151,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 52AA1DEF2F19A803005A72B9 /* Build configuration list for PBXNativeTarget "HobbyHangarTests" */;
 			buildPhases = (
+				52CUCKOO32F46A001005A72B9 /* Generate Cuckoo Mocks */,
 				52AA1DD32F19A803005A72B9 /* Sources */,
 				52AA1DD42F19A803005A72B9 /* Frameworks */,
 				52AA1DD52F19A803005A72B9 /* Resources */,
@@ -164,6 +167,7 @@
 			name = HobbyHangarTests;
 			packageProductDependencies = (
 				52AA1E902F45B003005A72B9 /* Logging */,
+				52CUCKOO22F46A001005A72B9 /* Cuckoo */,
 			);
 			productName = HobbyHangarTests;
 			productReference = 52AA1DD72F19A803005A72B9 /* HobbyHangarTests.xctest */;
@@ -229,6 +233,7 @@
 				52AA1E8F2F45B003005A72B9 /* XCRemoteSwiftPackageReference "Factory" */,
 				52AA1E8D2F45B001005A72B9 /* XCRemoteSwiftPackageReference "swift-log" */,
 				52AA1E8E2F45B002005A72B9 /* XCRemoteSwiftPackageReference "posthog-ios" */,
+				52CUCKOO42F46A001005A72B9 /* XCRemoteSwiftPackageReference "Cuckoo" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 52AA1DC72F19A802005A72B9 /* Products */;
@@ -289,6 +294,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		52CUCKOO32F46A001005A72B9 /* Generate Cuckoo Mocks */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Generate Cuckoo Mocks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Define output file\nOUTPUT_FILE=\"${PROJECT_DIR}/HobbyHangarTests/GeneratedMocks.swift\"\n\n# Find the Cuckoo run script\nCUCKOO_RUN_SCRIPT=$(find \"${BUILD_DIR%Build/*}SourcePackages/checkouts/Cuckoo\" -name \"run\" -type f 2>/dev/null | head -n 1)\n\nif [ -z \"$CUCKOO_RUN_SCRIPT\" ]; then\n    echo \"warning: Cuckoo run script not found. Skipping mock generation.\"\n    exit 0\nfi\n\n# Generate mocks for all protocols\n\"$CUCKOO_RUN_SCRIPT\" generate --testable \"HobbyHangar\" \\\n    --output \"${OUTPUT_FILE}\" \\\n    \"${PROJECT_DIR}/HobbyHangar/Repositories/DBRepository.swift\" \\\n    \"${PROJECT_DIR}/HobbyHangar/Services/PilotService.swift\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXTargetDependency section */
 		52AA1DD92F19A803005A72B9 /* PBXTargetDependency */ = {
@@ -694,6 +721,14 @@
 				minimumVersion = 0.63.1;
 			};
 		};
+		52CUCKOO42F46A001005A72B9 /* XCRemoteSwiftPackageReference "Cuckoo" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Brightify/Cuckoo";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 		52AA1E8D2F45B001005A72B9 /* XCRemoteSwiftPackageReference "swift-log" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-log";
@@ -725,6 +760,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 52AA1E282F19B17D005A72B9 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
 			productName = "plugin:SwiftLintBuildToolPlugin";
+		};
+		52CUCKOO22F46A001005A72B9 /* Cuckoo */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 52CUCKOO42F46A001005A72B9 /* XCRemoteSwiftPackageReference "Cuckoo" */;
+			productName = Cuckoo;
 		};
 		52AA1E892F45B001005A72B9 /* Logging */ = {
 			isa = XCSwiftPackageProductDependency;
