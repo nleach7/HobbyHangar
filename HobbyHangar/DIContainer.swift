@@ -5,80 +5,57 @@
 //  Created by Nick Leach on 1/15/26.
 //
 
-import Swinject
+import FactoryKit
 
-struct DIContainer {
+// MARK: - Container Registrations
+extension Container {
 
-    private let container: Container
-    private let synchronizedResolver: Resolver
-
-    init(useStubs: Bool = false) {
-        container = Container()
-        synchronizedResolver = container.synchronize()
-
-        if useStubs {
-            bootstrapStubs()
-        } else {
-            bootstrap()
+    var appLogger: Factory<AppLoggable> {
+        self { @MainActor in
+            #if DEBUG
+            AppLogger(isDebug: true)
+            #else
+            AppLogger(isDebug: false)
+            #endif
         }
+        .scope(.singleton)
     }
 
-    func bootstrap() {
-        #if DEBUG
-        let logger = ApplicationLogger(isDebug: true)
-        #else
-        let logger = ApplicationLogger(isDebug: false)
-        #endif
-
-        let appState = AppState()
-        let dbRepository = DatabaseRepository()
-        let postHogConfig = PostHog()
-
-        container.register(AppLogger.self) { _ in
-            logger
-        }.inObjectScope(.transient)
-
-        container.register(PostHogService.self) { _ in
-            postHogConfig
-        }.inObjectScope(.container)
-
-        container.register((any ApplicationState).self) { _ in
-            appState
-        }.inObjectScope(.container)
-
-        container.register(DBRepository.self) { _ in
-            dbRepository
-        }.inObjectScope(.transient)
-
-        container.register(PilotServiceable.self) { _ in
-            PilotService(databaseRepository: dbRepository, appState: appState)
-        }.inObjectScope(.transient)
-    }
-
-    func resolve<P>(serviceType: P.Type) -> P? {
-        return synchronizedResolver.resolve(serviceType.self)
-    }
-}
-
-extension DIContainer {
-    static var preview: Self {
-        .init(useStubs: true)
-    }
-
-    func bootstrapStubs() {
-        let appState = AppState()
-        let dbRepository = StubDBRepository()
-
-        container.register((any ApplicationState).self) { _ in
-            appState
-        }.inObjectScope(.container)
-
-        container.register(DBRepository.self) { _ in
-            dbRepository
-        }.inObjectScope(.transient)
-
-        container.register(PilotServiceable.self) { _ in
-            StubPilotService(databaseRepository: dbRepository)
+    var postHogService: Factory<PostHogServiceable> {
+        self { @MainActor in
+            #if DEBUG
+            PostHogService(isDebug: true)
+            #else
+            PostHogService(isDebug: false)
+            #endif
         }
+        .scope(.singleton)
+    }
+
+    var appState: Factory<AppState> {
+        self { @MainActor in ApplicationState() }
+            .scope(.singleton)
+    }
+
+    var databaseRepository: Factory<DBRepository> {
+        self { DatabaseRepository() }
+            .scope(.singleton)
+    }
+
+    var pilotService: Factory<PilotServiceable> {
+        self { @MainActor in PilotService(
+            databaseRepository: Container.shared.databaseRepository(),
+            appState: Container.shared.appState()
+        )}
+        .scope(.unique)
+    }
+
+    // MARK: - Previews / Test Helpers
+    func setupPreviewMocks() {
+        self.databaseRepository.register { StubDBRepository() }
+        self.pilotService.register { @MainActor in
+            StubPilotService(databaseRepository: Container.shared.databaseRepository())
+        }
+        self.appState.register { @MainActor in ApplicationState() }
     }
 }

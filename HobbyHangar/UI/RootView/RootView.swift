@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FactoryKit
 import Observation
 
 struct RootView: View {
@@ -54,5 +55,7 @@ struct RootView: View {
 }
 
 #Preview {
-    RootView(viewModel: .init(container: .preview))
+    RootView(viewModel: .init()).task {
+        Container.shared.setupPreviewMocks()
+    }
 }

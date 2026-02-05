@@ -1,6 +1,15 @@
 {
-  "originHash" : "eb6ce51eca8308fd48dc255dc1da461fddf7fc7326c7036ba25a108241d1493f",
+  "originHash" : "43b3267cddd1f4e8b70caa0b3102f9011036df71b387a6e020afc57fcdc5c193",
   "pins" : [
+    {
+      "identity" : "factory",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/hmlongco/Factory",
+      "state" : {
+        "revision" : "ccc898f21992ebc130bc04cc197460a5ae230bcf",
+        "version" : "2.5.3"
+      }
+    },
     {
       "identity" : "posthog-ios",
       "kind" : "remoteSourceControl",
@@ -26,15 +35,6 @@
       "state" : {
         "revision" : "c099f18417c53548134830b11669b96ed9801971",
         "version" : "0.63.1"
-      }
-    },
-    {
-      "identity" : "swinject",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Swinject/Swinject",
-      "state" : {
-        "revision" : "b685b549fe4d8ae265fc7a2f27d0789720425d69",
-        "version" : "2.10.0"
       }
     }
   ],

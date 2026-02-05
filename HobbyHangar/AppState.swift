@@ -27,14 +27,14 @@ struct System: Equatable {
 }
 
 // MARK: - Protocol
-protocol ApplicationState: AnyObject {
+protocol AppState: AnyObject {
     var system: System { get set }
     var navigation: Navigation { get set }
 }
 
 // MARK: - AppState
 @MainActor
-@Observable final class AppState: ApplicationState {
+@Observable final class ApplicationState: AppState {
     var system: System
     var navigation: Navigation
 
@@ -44,9 +44,9 @@ protocol ApplicationState: AnyObject {
     }
 }
 
-extension AppState {
-    static var preview: AppState {
-        let state = AppState()
+extension ApplicationState {
+    static var preview: ApplicationState {
+        let state = ApplicationState()
         state.system.isActive = true
         return state
     }

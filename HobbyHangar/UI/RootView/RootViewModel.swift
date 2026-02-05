@@ -8,19 +8,16 @@
 import Foundation
 import SwiftUI
 import Observation
+import FactoryKit
 
 @Observable final class RootViewModel {
-    private let container: DIContainer
-    let appState: AppState
 
-    init(container: DIContainer) {
-        self.container = container
+    private let appState: AppState
+    private let logger: AppLoggable
 
-        guard let appState = container.resolve(serviceType: (any ApplicationState).self) as? AppState else {
-            fatalError("Failed to get an instance of AppState")
-        }
-
-        self.appState = appState
+    init() {
+        appState = Container.shared.appState()
+        logger = Container.shared.appLogger()
     }
 
     var selectedTab: Tab {
@@ -32,18 +29,18 @@ import Observation
 // MARK: - Child ViewModels
 extension RootViewModel {
     func makeLogbookViewModel() -> LogbookViewModel {
-        .init(container: container)
+        .init()
     }
 
     func makeHangarViewModel() -> HangarViewModel {
-        .init(container: container)
+        .init()
     }
 
     func makeBatteryTrackerViewModel() -> BatteryTrackerViewModel {
-        .init(container: container)
+        .init()
     }
 
     func makePilotProfileViewModel() -> PilotProfileViewModel {
-        .init(container: container)
+        .init()
     }
 }

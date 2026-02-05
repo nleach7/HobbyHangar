@@ -11,7 +11,7 @@ import Logging
 public typealias LogMetadata = [String: String]
 
 /// Protocol defining the logging interface for the application.
-public protocol AppLogger {
+public protocol AppLoggable {
     func debug(_ message: String, metadata: LogMetadata?, file: String, function: String, line: UInt)
     func info(_ message: String, metadata: LogMetadata?, file: String, function: String, line: UInt)
     func warning(_ message: String, metadata: LogMetadata?, file: String, function: String, line: UInt)
@@ -21,7 +21,7 @@ public protocol AppLogger {
     func screenView(_ screenName: String, properties: [String: Any]?, file: String, function: String, line: UInt)
 }
 
-public extension AppLogger {
+public extension AppLoggable {
     func debug(
         _ message: String,
         metadata: LogMetadata? = nil,
@@ -94,7 +94,7 @@ public extension AppLogger {
 }
 
 /// Centralized logger for the application.
-public final class ApplicationLogger: AppLogger {
+public final class AppLogger: AppLoggable {
 
     private let bundleId: String
     private var logger: Logger

@@ -6,50 +6,29 @@
 //
 
 import SwiftUI
+import FactoryKit
 
 @main
 struct HobbyHangarApp: App {
-
     @Environment(\.scenePhase) private var scenePhase
 
-    private let diContainer: DIContainer
-    private var appState: any ApplicationState
-    private let logger: AppLogger
-    private let postHogConfig: PostHogService
+    private var appState: AppState
+    private let logger: AppLoggable
+    private let postHogConfig: PostHogServiceable
 
     init() {
-        diContainer = DIContainer()
-
-        guard let logger = diContainer.resolve(serviceType: AppLogger.self) else {
-            fatalError("Failed to get an instance of AppLogger")
-        }
-
-        guard let appState = diContainer.resolve(serviceType: (any ApplicationState).self) else {
-            logger.critical("Failed to get an instance ApplicationState")
-            fatalError("Failed to get an instance ApplicationState")
-        }
-
-        guard let postHogConfig = diContainer.resolve(serviceType: PostHogService.self) else {
-            logger.critical("Failed to get an instance of PostHogService")
-            fatalError("Failed to get an instance of PostHogService")
-        }
-
-        self.logger = logger
-        self.appState = appState
-        self.postHogConfig = postHogConfig
+        appState = Container.shared.appState()
+        logger = Container.shared.appLogger()
+        postHogConfig = Container.shared.postHogService()
 
         logger.info("App initialization complete")
     }
 
     var body: some Scene {
         WindowGroup {
-            RootView(viewModel: RootViewModel(container: diContainer))
+            RootView(viewModel: RootViewModel())
         }
         .onChange(of: scenePhase) {
-            guard let appState = appState as? AppState else {
-                return
-            }
-
             switch scenePhase {
             case .active:
                 appState.system.isActive = true

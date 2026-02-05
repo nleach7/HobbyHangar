@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FactoryKit
 
 struct BatteryTrackerView: View {
     @Bindable private var viewModel: BatteryTrackerViewModel
@@ -23,6 +24,8 @@ struct BatteryTrackerView: View {
 
 #Preview {
     NavigationStack {
-        BatteryTrackerView(viewModel: .init(container: .preview))
+        BatteryTrackerView(viewModel: .init())
+    }.task {
+        Container.shared.setupPreviewMocks()
     }
 }
