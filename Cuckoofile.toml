@@ -1,0 +1,13 @@
+# Cuckoo Configuration
+# https://github.com/Brightify/Cuckoo
+
+[modules.HobbyHangar]
+output = "HobbyHangarTests/GeneratedMocks.swift"
+testableImports = ["HobbyHangar"]
+sources = [
+    "HobbyHangar/Repositories/*.swift",
+    "HobbyHangar/Services/*.swift",
+]
+
+[modules.HobbyHangar.options]
+keepDocumentation = false
