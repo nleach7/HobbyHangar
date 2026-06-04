@@ -128,7 +128,8 @@ Given that feature description, do this:
        Use reasonable defaults for unspecified details (document assumptions in Assumptions section)
     6. Define Success Criteria
        Create measurable, technology-agnostic outcomes
-       Include both quantitative metrics (time, performance, volume) and qualitative measures (user satisfaction, task completion)
+       Include quantitative metrics that can be verified with local manual or automated validation (time, performance, volume, accuracy, completion of defined scenarios)
+       Do not create criteria that require user studies, representative pilot panels, survey data, support ticket history, analytics baselines, or population percentages unless the user explicitly says those resources exist
        Each criterion must be verifiable without implementation details
     7. Identify Key Entities (if data involved)
     8. Return: SUCCESS (spec ready for planning)
@@ -157,7 +158,7 @@ Given that feature description, do this:
       
       - [ ] No [NEEDS CLARIFICATION] markers remain
       - [ ] Requirements are testable and unambiguous
-      - [ ] Success criteria are measurable
+      - [ ] Success criteria are measurable and locally verifiable
       - [ ] Success criteria are technology-agnostic (no implementation details)
       - [ ] All acceptance scenarios are defined
       - [ ] Edge cases are identified
@@ -168,7 +169,7 @@ Given that feature description, do this:
       
       - [ ] All functional requirements have clear acceptance criteria
       - [ ] User scenarios cover primary flows
-      - [ ] Feature meets measurable outcomes defined in Success Criteria
+      - [ ] Feature meets locally verifiable measurable outcomes defined in Success Criteria
       - [ ] No implementation details leak into specification
       
       ## Notes
@@ -313,17 +314,18 @@ When creating this spec from a user prompt:
 
 Success criteria must be:
 
-1. **Measurable**: Include specific metrics (time, percentage, count, rate)
+1. **Measurable**: Include specific metrics (time, count, volume, accuracy, deterministic pass/fail coverage, or validation-run rates)
 2. **Technology-agnostic**: No mention of frameworks, languages, databases, or tools
 3. **User-focused**: Describe outcomes from user/business perspective, not system internals
-4. **Verifiable**: Can be tested/validated without knowing implementation details
+4. **Locally verifiable**: Can be tested with manual validation, automated tests, simulator/device validation, or deterministic review without requiring user research resources
+5. **Evidence-realistic**: Do not invent survey, satisfaction, adoption, support-ticket, analytics, or representative-user metrics unless the user explicitly provides that evidence source
 
 **Good examples**:
 
-- "Users can complete checkout in under 3 minutes"
-- "System supports 10,000 concurrent users"
-- "95% of searches return results in under 1 second"
-- "Task completion rate improves by 40%"
+- "The pilot can complete the primary workflow in under 3 minutes during manual validation"
+- "In validation scenarios with 200 saved records, the list appears within 2 seconds in at least 95% of runs"
+- "100% of validation cases covering missing, malformed, and valid inputs show the specified save or error behavior"
+- "Accessibility validation finds no blocking issues for the primary workflow with VoiceOver and large text sizes"
 
 **Bad examples** (implementation-focused):
 
@@ -331,6 +333,13 @@ Success criteria must be:
 - "Database can handle 1000 TPS" (implementation detail, use user-facing metric)
 - "React components render efficiently" (framework-specific)
 - "Redis cache hit rate above 80%" (technology-specific)
+
+**Bad examples** (not locally verifiable without extra research resources):
+
+- "90% of representative pilots can complete the workflow without assistance"
+- "User satisfaction improves by 25%"
+- "Support tickets related to the workflow drop by 50%"
+- "Task completion rate improves by 40%" unless baseline and measurement source are explicitly provided
 
 ## Done When
 

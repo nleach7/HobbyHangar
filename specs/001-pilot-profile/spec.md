@@ -169,11 +169,11 @@ As a pilot, I want flight locations to appear as a geographic heat map on my pro
 - **SC-001**: A returning pilot can open the profile and see identity details plus all available summary metrics within 2 seconds in at least 95% of validation runs using up to 1,000 saved flights.
 - **SC-002**: A pilot can add or update name, callsign, and profile picture, save the changes, and verify the updated profile in under 2 minutes.
 - **SC-003**: In validation scenarios covering no flights, missing distance, missing locations, tied aircraft, dense flight locations, and normal flight history, displayed totals, flight location heat-map inputs, and most-flown aircraft results match the source logbook data with 100% accuracy.
-- **SC-004**: At least 90% of representative pilots can identify total flights, total flight time, total flight distance, and most flown aircraft from the profile without assistance.
-- **SC-005**: At least 90% of selected most flown aircraft entries present the matching aircraft record within 3 seconds, including aircraft removed from the active hangar.
-- **SC-006**: At least 90% of profile loads with coordinate-backed flight locations show the profile-screen geographic heat map within 3 seconds, with denser saved flight activity represented with greater intensity.
+- **SC-004**: In profile validation scenarios, total flights, total flight time, total flight distance, and most flown aircraft are visible on the loaded profile without opening edit flows or secondary detail screens.
+- **SC-005**: 100% of selected most flown aircraft entries present the matching aircraft record within 3 seconds during validation, including aircraft removed from the active hangar.
+- **SC-006**: Profile loads with coordinate-backed flight locations show the profile-screen geographic heat map within 3 seconds in at least 95% of validation runs, with denser saved flight activity represented with greater intensity.
 - **SC-007**: In validation scenarios with geographically spread coordinate-backed flight locations, the default profile-screen map zoom accommodates 100% of coordinate-backed flight locations.
-- **SC-008**: At least 90% of profile-screen map selections open the full-screen map view within 3 seconds while preserving the same heat-map data.
+- **SC-008**: 100% of profile-screen map selections open the full-screen map view within 3 seconds during validation while preserving the same heat-map data.
 - **SC-009**: Accessibility validation finds no blocking issues for viewing the profile, editing identity details, understanding summary statistics, selecting most flown aircraft, viewing the profile-screen map, or opening the full-screen map with VoiceOver and large text sizes.
 
 ## Assumptions

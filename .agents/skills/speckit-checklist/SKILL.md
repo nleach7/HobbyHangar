@@ -149,7 +149,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    - **Requirement Completeness** (Are all necessary requirements documented?)
    - **Requirement Clarity** (Are requirements specific and unambiguous?)
    - **Requirement Consistency** (Do requirements align without conflicts?)
-   - **Acceptance Criteria Quality** (Are success criteria measurable?)
+   - **Acceptance Criteria Quality** (Are success criteria measurable and locally verifiable?)
    - **Scenario Coverage** (Are all flows/cases addressed?)
    - **Edge Case Coverage** (Are boundary conditions defined?)
    - **Non-Functional Requirements** (Performance, Security, Accessibility, etc. - are they specified?)

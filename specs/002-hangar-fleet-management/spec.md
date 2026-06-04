@@ -8,6 +8,12 @@
 
 **Input**: User description: "The Hangar is the technical registry for a pilot's fleet. The pilot will create entries for each aircraft which can then be referenced in flights in the log book and stats on the pilot profile."
 
+## Clarifications
+
+### Session 2026-06-04
+
+- Q: Should inactive aircraft be selectable when creating a new flight log? -> A: Inactive aircraft cannot be selected for new flight logs; the pilot must restore the aircraft first.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Create Aircraft Record (Priority: P1)
@@ -90,6 +96,7 @@ As a pilot, I want to remove aircraft from my active Hangar without losing histo
 2. **Given** an aircraft has been removed from the active Hangar, **When** the pilot views a historical flight that used it, **Then** the flight still shows the preserved aircraft record.
 3. **Given** an inactive aircraft contributes to profile aircraft statistics, **When** the pilot views profile aircraft usage, **Then** the aircraft can still be identified from its preserved record.
 4. **Given** the pilot wants to use a removed aircraft again, **When** the pilot restores it to the active Hangar, **Then** it becomes available for new flight logs.
+5. **Given** an aircraft is inactive, **When** the pilot creates a new flight log, **Then** the inactive aircraft cannot be selected until the pilot restores it to the active Hangar.
 
 ### Edge Cases
 
@@ -138,7 +145,7 @@ As a pilot, I want to remove aircraft from my active Hangar without losing histo
 - **FR-023**: The pilot MUST be able to remove an aircraft from the active Hangar.
 - **FR-024**: Removing an aircraft from the active Hangar MUST preserve the aircraft record when it is referenced by saved flights.
 - **FR-025**: An inactive aircraft MUST remain viewable from historical flight references and profile aircraft usage contexts.
-- **FR-026**: An inactive aircraft MUST NOT appear as a default choice for new flight logs unless the pilot restores it or intentionally selects from inactive records.
+- **FR-026**: An inactive aircraft MUST NOT be selectable for new flight logs unless the pilot first restores it to the active Hangar.
 - **FR-027**: The pilot MUST be able to restore an inactive aircraft to the active Hangar.
 - **FR-028**: New flight logs MUST be able to reference active aircraft from the Hangar rather than storing aircraft names as unrelated text.
 - **FR-029**: Saved flights MUST retain their aircraft references when the referenced aircraft is edited, removed from the active Hangar, or restored.
@@ -178,10 +185,11 @@ As a pilot, I want to remove aircraft from my active Hangar without losing histo
 - **SC-003**: In validation scenarios covering required name, optional image, partial technical details, category-specific required details, duplicate names, and long text values, saved aircraft records persist with 100% accuracy after relaunch.
 - **SC-004**: 100% of saved flights created with a Hangar aircraft continue to identify the same aircraft after the aircraft is edited.
 - **SC-005**: 100% of saved flights and profile aircraft usage summaries continue to identify a referenced aircraft after it is removed from the active Hangar.
-- **SC-006**: At least 90% of representative pilots can create, favorite, sort, find, open, edit, remove, and restore an aircraft without assistance.
-- **SC-007**: At least 90% of new flight log attempts with active aircraft available let the pilot select the intended aircraft in under 30 seconds.
+- **SC-006**: In validation scenarios, create, favorite, sort, find, open, edit, remove, and restore workflows can each be completed successfully from the Hangar without external setup.
+- **SC-007**: In 100% of validation scenarios with active aircraft available, the intended aircraft can be selected for a new flight log in under 30 seconds.
 - **SC-008**: Accessibility validation finds no blocking issues for browsing the Hangar, reviewing aircraft details, editing aircraft, confirming removal, restoring aircraft, or selecting an aircraft for a flight with VoiceOver and large text sizes.
 - **SC-009**: In validation scenarios covering favorited aircraft, non-favorited aircraft, duplicate names, tied flight counts, tied flight times, and aircraft with no saved flights, the default, alphabetical, flight count descending, and flight time descending sort orders match their specified rules with 100% accuracy.
+- **SC-010**: In validation scenarios with inactive aircraft, new flight log selection excludes inactive aircraft until restoration, and restored aircraft become selectable with 100% accuracy.
 
 ## Assumptions
 
@@ -193,6 +201,6 @@ As a pilot, I want to remove aircraft from my active Hangar without losing histo
 - The alphabetical, flight count descending, and flight time descending sort options ignore favorite status for ordering, while favorite stars remain visible.
 - Flight count and flight time sorts use aircraft usage derived from saved flight references; aircraft with no saved flights have zero usage for these sort options.
 - Permanent deletion of aircraft records is out of scope for this feature. Removing an aircraft means marking it inactive so historical flight and profile references can remain intact.
-- Active aircraft are the default choices for new flight logs. Inactive aircraft remain visible only where needed for history, profile usage, or explicit restoration.
+- Active aircraft are the only choices for new flight logs. Inactive aircraft remain visible only where needed for history, profile usage, or explicit restoration, and must be restored before they can be selected for a new flight.
 - Flight logging and pilot profile features may be planned or implemented separately; this feature defines the Hangar registry behavior and reference contract they rely on.
 - Aircraft usage statistics on the pilot profile are derived from saved flight references and are not manually edited in the Hangar.

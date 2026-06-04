@@ -123,15 +123,18 @@ deviation from current SwiftUI platform conventions.
 
 <!--
   ACTION REQUIRED: Define measurable success criteria.
-  These must be technology-agnostic and measurable.
+  These must be technology-agnostic, measurable, and verifiable with local manual
+  or automated validation. Do not use user-study, survey, support-ticket,
+  analytics, or representative-user metrics unless the user explicitly says those
+  resources exist.
 -->
 
 ### Measurable Outcomes
 
-- **SC-001**: [Measurable metric, e.g., "Users can complete account creation in under 2 minutes"]
-- **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"]
-- **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
-- **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
+- **SC-001**: [Workflow metric, e.g., "The user can complete account creation in under 2 minutes during validation"]
+- **SC-002**: [Scale/performance metric, e.g., "In validation with 1,000 saved records, users see results within 2 seconds in at least 95% of runs"]
+- **SC-003**: [Accuracy metric, e.g., "100% of validation cases covering valid, missing, and malformed inputs produce the specified result"]
+- **SC-004**: [Accessibility metric, e.g., "Accessibility validation finds no blocking issues for the primary workflow with VoiceOver and large text sizes"]
 
 ## Assumptions
 
