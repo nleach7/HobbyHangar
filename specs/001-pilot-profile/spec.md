@@ -157,9 +157,9 @@ As a pilot, I want flight locations to appear as a geographic heat map on my pro
 ## Operational Considerations *(mandatory when feature changes state, persistence, lifecycle, or telemetry)*
 
 - **State Owner**: The app must maintain a single authoritative pilot profile record and derive all summary metrics from saved flight, aircraft, and location records rather than storing manually edited totals.
-- **Lifecycle / Offline Behavior**: Saved profile identity and derived summary values must remain available while offline, after backgrounding, and after relaunch. Interrupted edits must either complete safely or leave the previous saved profile intact.
+- **Lifecycle / Offline Behavior**: Saved profile identity and derived summary values must remain available from SwiftData-backed local storage while offline, after backgrounding, after relaunch, and after same-pilot iCloud sync makes profile and logbook data available on another device. Interrupted edits or sync updates must either complete safely or leave the previous saved profile intact.
 - **Observability**: Diagnostic events must help identify profile load/save failures, summary refresh failures, unavailable profile or full-screen map displays, and aircraft-record navigation failures without exposing identity, image, location, or aircraft details.
-- **Privacy / Data Sensitivity**: Pilot name, callsign, profile picture, flight locations, and aircraft usage are personal data. They must remain local-first and must not be shared externally except through explicit pilot action such as opening the full-screen map.
+- **Privacy / Data Sensitivity**: Pilot name, callsign, profile picture, flight locations, and aircraft usage are personal data. They must remain local-first, sync only through the pilot's iCloud account for cross-device continuity, and must not be shared outside that account except through explicit pilot action such as opening the full-screen map.
 - **HIG / Platform Alignment**: The profile must follow native iOS navigation, editing, feedback, permission, accessibility, and content layout conventions. The profile-screen map must be understandable at profile scale, and any profile picture, aircraft record, or full-screen map interaction must provide clear user intent, recoverable cancellation, and understandable fallback states.
 
 ## Success Criteria *(mandatory)*
@@ -178,7 +178,8 @@ As a pilot, I want flight locations to appear as a geographic heat map on my pro
 
 ## Assumptions
 
-- The profile is for the current local pilot using the app; multi-pilot account switching is out of scope for this feature.
+- The profile is for the current pilot using the app; multi-pilot account switching is out of scope for this feature.
+- Same-pilot cross-device sync through iCloud is in scope for the product and will be specified by the dedicated iCloud sync feature.
 - Total flights count saved logbook flights that have not been deleted or explicitly excluded from the logbook.
 - Total flight time and total flight distance are calculated from saved flight log values; missing distance values do not block the known distance total.
 - Distance display units follow the app's existing unit preference or default; this feature does not introduce a separate unit preference.

@@ -171,9 +171,9 @@ As a pilot, I want to remove aircraft from my active Hangar without losing histo
 ## Operational Considerations *(mandatory when feature changes state, persistence, lifecycle, or telemetry)*
 
 - **State Owner**: The app must maintain one authoritative Hangar registry for the current pilot. Flight logs and profile aircraft statistics must consume aircraft references from that registry rather than owning separate aircraft copies. Favorite status and the active sort selection belong to the Hangar list experience.
-- **Lifecycle / Offline Behavior**: Aircraft records, favorite status, sort selection, and active or inactive status must be available offline, after backgrounding, and after relaunch. Interrupted create, edit, favorite, sort, remove, and restore operations must either complete safely or leave the last saved Hangar state intact.
+- **Lifecycle / Offline Behavior**: Aircraft records, favorite status, sort selection, and active or inactive status must remain available from SwiftData-backed local storage offline, after backgrounding, after relaunch, and after same-pilot iCloud sync makes Hangar data available on another device. Interrupted create, edit, favorite, sort, remove, restore, or sync updates must either complete safely or leave the last saved Hangar state intact.
 - **Observability**: Diagnostic events must help identify Hangar load failures, save failures, favorite status failures, sort failures, removal or restoration failures, and aircraft selection failures without exposing aircraft names, images, component details, firmware values, or flight history.
-- **Privacy / Data Sensitivity**: Aircraft names, images, hardware configuration, firmware values, and flight usage relationships are pilot-specific data. They must remain local-first and must not be shared externally except through explicit pilot action.
+- **Privacy / Data Sensitivity**: Aircraft names, images, hardware configuration, firmware values, and flight usage relationships are pilot-specific data. They must remain local-first, sync only through the pilot's iCloud account for cross-device continuity, and must not be shared outside that account except through explicit pilot action.
 - **HIG / Platform Alignment**: The Hangar must follow native iOS navigation, list, detail, edit, confirmation, feedback, favorite, sorting, and accessibility conventions. Removing an aircraft from the active Hangar is a meaningful state change and must use clear language, recoverable navigation, and confirmation behavior that avoids accidental history confusion.
 
 ## Success Criteria *(mandatory)*
@@ -193,7 +193,8 @@ As a pilot, I want to remove aircraft from my active Hangar without losing histo
 
 ## Assumptions
 
-- The Hangar is scoped to the current local pilot; multi-pilot fleet sharing is out of scope for this feature.
+- The Hangar is scoped to the current pilot using the app; multi-pilot fleet sharing is out of scope for this feature.
+- Same-pilot cross-device sync through iCloud is in scope for the product and will be specified by the dedicated iCloud sync feature.
 - Aircraft name is the only universally required aircraft field.
 - Aircraft image and technical details are optional unless a selected technical category requires a supporting detail to be meaningful.
 - Favorite status is an optional pilot-maintained marker for active aircraft and is displayed as a star.
