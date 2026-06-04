@@ -17,28 +17,30 @@
 - Q: When should the Logbook warn about duplicate or conflicting flight entries? → A: Warn when a new or edited flight occurs at the same or overlapping date/time range as an existing saved flight.
 - Q: What should happen after a flight time overlap warning appears? → A: Show a nonblocking warning and allow the pilot to either save anyway or review/edit the flight details.
 - Q: Should saved imported flights retain the original EdgeTX CSV file? → A: Do not retain the original CSV after saving; keep only parsed flight data.
+- Q: Which source should Flight Logging use to create saved flight distance values for Pilot Profile totals? → A: Manual flights may save optional pilot-entered distance; imported GPS tracks can derive saved flight distance.
 
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Log a Flight Manually (Priority: P1)
 
-As a recreational UAV pilot, I want to manually record a completed flight with the aircraft, battery, start date/time, duration, location, voltage, and mAh details I know so that my logbook captures useful flight history even when I do not have a radio log file.
+As a recreational UAV pilot, I want to manually record a completed flight with the aircraft, battery, start date/time, duration, location, distance, voltage, and mAh details I know so that my logbook captures useful flight history even when I do not have a radio log file.
 
 **Why this priority**: Manual entry is the core logbook workflow and must work for every pilot before imported telemetry can add extra value.
 
-**Independent Test**: Can be fully tested by creating active aircraft and battery records, starting a new flight log, confirming the start date/time defaults to the current local date/time, choosing the aircraft and battery as required references, entering a duration, reviewing the optional map location prompt, accepting or changing the default current-location map position when available, entering available battery details, saving, leaving the Logbook, returning, and verifying the same flight entry is present with the same aircraft, battery, time range, and optional location relationships.
+**Independent Test**: Can be fully tested by creating active aircraft and battery records, starting a new flight log, confirming the start date/time defaults to the current local date/time, choosing the aircraft and battery as required references, entering a duration, reviewing the optional map location prompt, accepting or changing the default current-location map position when available, entering optional flight distance and available battery details, saving, leaving the Logbook, returning, and verifying the same flight entry is present with the same aircraft, battery, time range, optional distance, and optional location relationships.
 
 **Acceptance Scenarios**:
 
-1. **Given** the pilot has at least one active aircraft and one active battery, **When** the pilot starts a new manual flight log, **Then** the log entry asks for the aircraft flown, battery used, flight start date/time, flight duration, optional flight location on a map, starting voltage, ending voltage, and mAh used.
+1. **Given** the pilot has at least one active aircraft and one active battery, **When** the pilot starts a new manual flight log, **Then** the log entry asks for the aircraft flown, battery used, flight start date/time, flight duration, optional flight location on a map, optional flight distance, starting voltage, ending voltage, and mAh used.
 2. **Given** the pilot starts a new manual flight log, **When** the entry form appears, **Then** the flight start date/time defaults to the current local date/time and can be changed to another valid past or current date/time.
 3. **Given** current location is available for manual entry, **When** the optional flight location map is shown, **Then** the map defaults to the user's current location and the pilot can keep it, move it, clear it, or skip location entry.
 4. **Given** current location is unavailable or the pilot does not provide a location, **When** the pilot saves the flight with all required fields present, **Then** the flight is saved without a location and the missing location is clearly marked as not recorded.
 5. **Given** current location cannot be used because location services or location permission are not enabled, **When** the optional flight location map is shown, **Then** the pilot is offered a link to the appropriate system setting to enable location access without blocking manual location selection or saving.
-6. **Given** the pilot provides an active aircraft, active battery, valid start date/time, and positive flight duration, **When** the pilot saves the flight with voltage or mAh fields left unknown, **Then** the flight is saved and the unknown values remain clearly marked as not recorded.
-7. **Given** the pilot enters invalid duration, voltage, or mAh values, **When** the pilot attempts to save, **Then** the flight is not saved and the pilot receives clear, recoverable feedback identifying the invalid fields.
+6. **Given** the pilot provides an active aircraft, active battery, valid start date/time, and positive flight duration, **When** the pilot saves the flight with distance, voltage, or mAh fields left unknown, **Then** the flight is saved and the unknown values remain clearly marked as not recorded.
+7. **Given** the pilot enters invalid duration, distance, voltage, or mAh values, **When** the pilot attempts to save, **Then** the flight is not saved and the pilot receives clear, recoverable feedback identifying the invalid fields.
 8. **Given** a saved flight references an aircraft and battery, **When** the aircraft or battery later leaves active inventory, **Then** the saved flight still preserves the historical aircraft and battery used.
 9. **Given** a manual flight's time range overlaps an existing saved flight, **When** the pilot attempts to save, **Then** the Logbook shows a nonblocking overlap warning and lets the pilot either save anyway or review and edit the flight details.
+10. **Given** the pilot provides a valid optional distance for a manual flight, **When** the flight is persisted, **Then** the saved flight retains that distance for flight detail review and Pilot Profile total-distance calculations.
 
 ---
 
@@ -48,7 +50,7 @@ As a pilot with an EdgeTX radio log, I want to upload the log and review the ext
 
 **Why this priority**: Importing EdgeTX logs turns recorded radio telemetry into richer flight records and reduces manual transcription errors.
 
-**Independent Test**: Can be tested by importing an EdgeTX log that includes timestamped telemetry, GPS points, flight-start indicators, voltage, mAh, RSSI, and LQ values, reviewing the created draft, choosing any missing aircraft or battery reference, saving the flight, and verifying the saved entry contains the extracted details, linked references, GPS track, and derived flight location.
+**Independent Test**: Can be tested by importing an EdgeTX log that includes timestamped telemetry, GPS points, flight-start indicators, voltage, mAh, RSSI, and LQ values, reviewing the created draft, choosing any missing aircraft or battery reference, saving the flight, and verifying the saved entry contains the extracted details, linked references, GPS track, derived flight location, and derived flight distance when enough valid GPS points are available.
 
 **Acceptance Scenarios**:
 
@@ -60,6 +62,7 @@ As a pilot with an EdgeTX radio log, I want to upload the log and review the ext
 6. **Given** the imported log is unsupported, malformed, empty, or missing usable flight data, **When** the import is attempted, **Then** no flight is saved and the pilot receives clear feedback explaining that the log could not be imported.
 7. **Given** an imported flight candidate's time range overlaps an existing saved flight, **When** the pilot attempts to save the candidate, **Then** the Logbook shows a nonblocking overlap warning and lets the pilot either save anyway or review and edit the candidate.
 8. **Given** the pilot saves an imported flight, **When** the saved flight is persisted, **Then** the saved flight retains parsed flight details, GPS tracks, and telemetry series without retaining the original EdgeTX CSV file contents.
+9. **Given** an imported flight candidate includes enough valid ordered GPS points, **When** the import review draft is created, **Then** the draft includes a derived flight distance from the GPS track.
 
 ---
 
@@ -69,7 +72,7 @@ As a pilot, I want to review saved flights with their aircraft, battery, battery
 
 **Why this priority**: A logbook must make saved records useful after entry; imported tracks and telemetry are valuable only if pilots can inspect them clearly.
 
-**Independent Test**: Can be tested by saving one manual flight and one imported EdgeTX flight with GPS track, mAh used, pack voltage, RSSI, and LQ telemetry data, opening each flight detail, and verifying that manual values, imported values, GPS track map, telemetry line graphs, and fallback states appear according to the data available for each flight.
+**Independent Test**: Can be tested by saving one manual flight and one imported EdgeTX flight with GPS track, mAh used, pack voltage, RSSI, and LQ telemetry data, opening each flight detail, and verifying that manual values, imported values, derived flight distance when available, GPS track map, telemetry line graphs, and fallback states appear according to the data available for each flight.
 
 **Acceptance Scenarios**:
 
@@ -77,6 +80,7 @@ As a pilot, I want to review saved flights with their aircraft, battery, battery
 2. **Given** a saved manual flight has no GPS or telemetry data, **When** the pilot opens the flight detail, **Then** the detail shows the recorded manual fields and clear non-telemetry fallback states.
 3. **Given** a saved imported flight includes GPS points, **When** the pilot opens the flight detail, **Then** the GPS track is viewable on a map without requiring the original imported file.
 4. **Given** a saved imported flight includes mAh used, pack voltage, RSSI, LQ, or other telemetry series, **When** the pilot opens the flight detail, **Then** each available series can be viewed as a line graph with telemetry value on the Y axis and elapsed flight time on the X axis.
+5. **Given** a saved imported flight includes a derived flight distance, **When** the pilot opens the flight detail or Pilot Profile totals refresh, **Then** the distance is available for display and profile total-distance calculation.
 
 ---
 
@@ -107,8 +111,8 @@ As a pilot, I want to correct or remove saved flight entries so that the logbook
 - The pilot moves the map away from the default current location, clears the selected location, or skips location selection.
 - The pilot records a manual flight location that differs from a later imported GPS track for a similar flight.
 - The pilot enters a zero, negative, missing, non-numeric, or unusually long flight duration.
-- The pilot leaves starting voltage, ending voltage, or mAh used unknown.
-- The pilot enters zero, negative, non-numeric, or unusually high starting voltage, ending voltage, or mAh used.
+- The pilot leaves flight distance, starting voltage, ending voltage, or mAh used unknown.
+- The pilot enters zero, negative, non-numeric, or unusually high flight distance, starting voltage, ending voltage, or mAh used.
 - The pilot enters an ending voltage greater than starting voltage.
 - The pilot changes the aircraft or battery assignment after a flight has already contributed to usage summaries.
 - The referenced aircraft is renamed, edited, made inactive, restored, or missing from default active selection after the flight is saved.
@@ -124,6 +128,7 @@ As a pilot, I want to correct or remove saved flight entries so that the logbook
 - Telemetry samples are irregularly spaced, missing units, contain gaps, or include outlier values.
 - Telemetry series for mAh used, pack voltage, RSSI, or LQ are absent, partially present, have a single sample, or use inconsistent sample timing.
 - GPS points are missing, sparse, duplicated, out of order, or obviously invalid.
+- An imported GPS track has too few valid points, invalid points, or gaps that prevent a trustworthy derived distance.
 - A saved GPS track has too few valid points to draw a meaningful route but still has a derived flight location.
 - The pilot opens a GPS track map for a long flight, sparse flight, or flight with telemetry gaps.
 - The app is backgrounded or relaunched while the pilot is creating, editing, importing, reviewing, saving, or removing a flight.
@@ -143,11 +148,12 @@ As a pilot, I want to correct or remove saved flight entries so that the logbook
 - **FR-008**: The pilot MUST be able to change the flight start date/time to another valid past or current date/time.
 - **FR-009**: The Logbook MUST prevent saving a flight with a future start date/time.
 - **FR-010**: Each saved flight MUST capture a positive flight duration and derive a flight time range from the start date/time plus duration.
-- **FR-011**: The manual entry flow MUST ask for starting voltage, ending voltage, and mAh used.
-- **FR-012**: The Logbook MUST allow starting voltage, ending voltage, and mAh used to remain unknown when the pilot does not have those values.
+- **FR-011**: The manual entry flow MUST ask for optional flight distance, starting voltage, ending voltage, and mAh used.
+- **FR-012**: The Logbook MUST allow flight distance, starting voltage, ending voltage, and mAh used to remain unknown when the pilot does not have those values.
 - **FR-013**: When starting voltage or ending voltage is provided, the Logbook MUST validate that the value is a positive numeric pack voltage.
 - **FR-014**: When both starting voltage and ending voltage are provided, the Logbook MUST prevent saving an ending voltage greater than the starting voltage unless the pilot corrects the values.
 - **FR-015**: When mAh used is provided, the Logbook MUST validate that the value is a positive numeric value.
+- **FR-015a**: When manual flight distance is provided, the Logbook MUST validate that the value is a positive numeric distance in the app's current display units.
 - **FR-016**: The system MUST present clear, recoverable feedback when a manual flight cannot be saved because required or provided fields are invalid.
 - **FR-017**: Saved manual flight entries MUST remain available after leaving the Logbook, app relaunch, and offline use.
 - **FR-018**: Saved flights MUST retain historical aircraft and battery identity when the referenced aircraft or battery is renamed, edited, removed from active selection, retired, restored, or otherwise unavailable for default new-flight selection.
@@ -156,7 +162,7 @@ As a pilot, I want to correct or remove saved flight entries so that the logbook
 - **FR-021**: Additional saved flight details beyond aircraft and battery references MUST remain attached to the same Flight record so the Logbook presents one coherent record per completed flight.
 - **FR-022**: The pilot MUST be able to import EdgeTX CSV telemetry log files with a header row as a source for flight entries.
 - **FR-023**: EdgeTX import MUST create review drafts before saving any imported flight.
-- **FR-024**: EdgeTX import review drafts MUST show every recognized flight start date/time, duration, voltage, mAh, GPS track, and telemetry field extracted from the selected log.
+- **FR-024**: EdgeTX import review drafts MUST show every recognized flight start date/time, duration, voltage, mAh, GPS track, derived flight distance when the GPS track supports it, and telemetry field extracted from the selected log.
 - **FR-025**: If an imported log does not confidently identify a saved aircraft, the pilot MUST choose an active aircraft before saving the imported flight.
 - **FR-026**: If an imported log does not confidently identify a saved battery, the pilot MUST choose an active battery before saving the imported flight.
 - **FR-027**: The pilot MUST be able to edit extracted start date/time, duration, voltage, mAh, aircraft, and battery values in an import review draft before saving.
@@ -170,15 +176,15 @@ As a pilot, I want to correct or remove saved flight entries so that the logbook
 - **FR-035**: Saved imported flights MUST support clear fallback states for missing GPS tracks, missing telemetry series, missing units, sparse samples, or telemetry gaps.
 - **FR-036**: GPS track review MUST identify when a flight has no usable GPS data rather than implying a track exists.
 - **FR-037**: Telemetry graph review MUST identify the series name, units when known, flight time range, latest value when available, and enough summary information to be understandable without reading every sample.
-- **FR-038**: The pilot MUST be able to edit a saved flight's aircraft, battery, start date/time, duration, starting voltage, ending voltage, and mAh used.
+- **FR-038**: The pilot MUST be able to edit a saved flight's aircraft, battery, start date/time, duration, distance, starting voltage, ending voltage, and mAh used.
 - **FR-039**: Editing manual fields on an imported flight MUST NOT remove its saved GPS track or telemetry data unless the pilot explicitly removes those imported details.
 - **FR-040**: The pilot MUST be able to remove a saved flight from the Logbook after a clear confirmation.
 - **FR-041**: Removing a saved flight MUST NOT delete the referenced aircraft record, referenced battery record, or other saved flights.
-- **FR-042**: Aircraft usage summaries, battery usage summaries, and pilot profile flight statistics MUST derive from the current set of saved flight entries.
+- **FR-042**: Aircraft usage summaries, battery usage summaries, and pilot profile flight statistics MUST derive from the current set of saved flight entries, including known flight distance values.
 - **FR-043**: Editing or removing a saved flight MUST update derived aircraft usage, battery usage, and pilot profile flight statistics to match the current saved logbook.
 - **FR-044**: The Logbook MUST provide understandable fallback states for empty flight history, incomplete optional fields, unavailable imported details, invalid imports, and historical references to inactive aircraft or retired batteries.
 - **FR-045**: Logbook diagnostics MUST record safe events for flight list load, manual flight create, flight update, flight removal, EdgeTX import started, EdgeTX import review created, manual import split, EdgeTX import saved, flight time overlap warning, import failure, GPS track review, telemetry graph review, and recoverable persistence failures.
-- **FR-046**: Logbook diagnostics MUST NOT include aircraft names, battery names, flight start date/times, durations, voltage values, mAh values, GPS coordinates, telemetry samples, imported file contents, or other pilot-specific flight details.
+- **FR-046**: Logbook diagnostics MUST NOT include aircraft names, battery names, flight start date/times, durations, distance values, voltage values, mAh values, GPS coordinates, telemetry samples, imported file contents, or other pilot-specific flight details.
 - **FR-047**: The Logbook MUST support accessible labels, values, focus order, text scaling, and touch targets for manual entry, aircraft selection, battery selection, import review, flight list browsing, flight detail review, GPS track review, telemetry graph review, editing, and removal confirmation.
 - **FR-048**: GPS tracks and telemetry graphs MUST provide accessible summaries that convey the presence, type, time range, and latest or notable values where enough data exists.
 - **FR-049**: The manual entry flow MUST ask the pilot whether to provide an optional flight location on a map.
@@ -204,15 +210,20 @@ As a pilot, I want to correct or remove saved flight entries so that the logbook
 - **FR-069**: Telemetry line graph review MUST provide clear fallback states for absent series, single-sample series, irregular sample timing, missing units, telemetry gaps, and outlier values.
 - **FR-070**: The Logbook MUST support mAh used, pack voltage, RSSI, and LQ as named telemetry graph types when those series are present in imported flight data.
 - **FR-071**: After an imported flight is saved, cancelled, discarded, or fails import, the Logbook MUST NOT retain the original EdgeTX CSV file contents; saved flights MUST retain only parsed flight data, GPS tracks, telemetry series, source status, and safe import metadata needed by the saved flight.
+- **FR-072**: Manual flight entry MUST allow an optional pilot-entered flight distance; manual flights with no entered distance have unknown distance for profile total-distance calculations.
+- **FR-073**: When an imported flight candidate includes enough valid ordered GPS points, the Logbook MUST derive and save the flight distance from the GPS track.
+- **FR-074**: When an imported GPS track is absent, unusable, or has too few valid points to derive a trustworthy distance, the Logbook MUST leave flight distance unknown rather than estimating or requiring pilot entry.
+- **FR-075**: Known saved flight distance values MUST be available to Pilot Profile total-distance calculations, while unknown flight distance values MUST NOT block saving, reviewing, or summarizing other flight data.
 
 ### Key Entities
 
-- **Flight**: Represents one logged aircraft use event for the current pilot. Required information is the aircraft flown and battery used; Flight Logging adds start date/time, duration, flight time range, optional flight location, optional battery usage details, source status, optional GPS track, and optional telemetry series to make the record useful in the Logbook.
+- **Flight**: Represents one logged aircraft use event for the current pilot. Required information is the aircraft flown and battery used; Flight Logging adds start date/time, duration, flight time range, optional flight location, optional flight distance, optional battery usage details, source status, optional GPS track, and optional telemetry series to make the record useful in the Logbook.
 - **Aircraft Reference**: Represents the durable link from a saved flight to the aircraft record flown, preserving historical flight identity even when the aircraft later leaves active inventory.
 - **Battery Reference**: Represents the durable link from a saved flight to the battery pack used, preserving historical flight identity even when the battery is later retired or otherwise leaves active selection.
 - **Flight Time Range**: Represents the occupied interval from a flight's start date/time through its duration, used to warn about same-time and overlapping saved flight entries.
-- **Manual Flight Details**: Represents values entered or corrected by the pilot, including start date/time, duration, optional flight location, starting voltage, ending voltage, and mAh used.
+- **Manual Flight Details**: Represents values entered or corrected by the pilot, including start date/time, duration, optional flight location, optional flight distance, starting voltage, ending voltage, and mAh used.
 - **Flight Location**: Represents a single reviewable location for the saved flight. Manual entries use an optional map-selected location, while imported flights with GPS tracks derive the location from the first valid GPS point after the aircraft started flying.
+- **Flight Distance**: Represents an optional distance value either entered by the pilot for a manual flight or derived from an imported GPS track with enough valid ordered points.
 - **Flight Start Signal**: Represents the telemetry evidence used to decide when the aircraft started flying for imported GPS location derivation, preferring armed flags and falling back to first throttle value greater than zero when armed flags are absent.
 - **EdgeTX Import**: Represents one pilot-selected EdgeTX CSV telemetry log import attempt with a header row, including the initial one-flight candidate, any pilot-created split candidates, recognized values, import warnings, and review drafts. Original CSV contents are transient import input and are not retained after save, cancellation, discard, or failure.
 - **Import Review Draft**: Represents an unsaved flight candidate produced from an EdgeTX log that the pilot can review, complete, split, edit, save, or discard.
@@ -220,14 +231,14 @@ As a pilot, I want to correct or remove saved flight entries so that the logbook
 - **Telemetry Series**: Represents timestamped readings extracted from an imported flight, such as mAh used, pack voltage, RSSI, LQ, current, or other available radio telemetry.
 - **Telemetry Line Graph**: Represents a visual review of one telemetry series with elapsed flight time on the X axis and the series value on the Y axis.
 - **Flight Source Status**: Represents whether a saved flight was created manually, imported from EdgeTX, or manually corrected after import.
-- **Derived Usage Summary**: Represents aircraft usage, battery usage, and pilot profile flight statistics calculated from saved flight entries.
+- **Derived Usage Summary**: Represents aircraft usage, battery usage, and pilot profile flight statistics calculated from saved flight entries, including known saved flight distance values.
 
 ## Operational Considerations *(mandatory when feature changes state, persistence, lifecycle, or telemetry)*
 
-- **State Owner**: The app must maintain one authoritative Logbook for the current pilot. The Flight domain record owns the aircraft and battery references required by the proposed data model plus its recorded manual values, flight location, imported GPS or telemetry data, and any derived imported location. Aircraft and battery identity remain owned by the Hangar and Battery Tracker, with the Logbook storing durable references rather than copied names.
-- **Lifecycle / Offline Behavior**: Manual entries, optional manual flight locations, saved imported flights, edits, removals, GPS tracks, telemetry series, and derived usage relationships must remain available from SwiftData-backed local storage offline, after backgrounding, after relaunch, and after same-pilot iCloud sync makes Logbook data available on another device. Interrupted manual entry, location selection, import review, edit, removal, or sync updates must either complete safely or leave the last saved Logbook state intact.
+- **State Owner**: The app must maintain one authoritative Logbook for the current pilot. The Flight domain record owns the aircraft and battery references required by the proposed data model plus its recorded manual values, flight location, flight distance, imported GPS or telemetry data, and derived imported location. Aircraft and battery identity remain owned by the Hangar and Battery Tracker, with the Logbook storing durable references rather than copied names.
+- **Lifecycle / Offline Behavior**: Manual entries, optional manual flight locations, optional flight distances, saved imported flights, edits, removals, GPS tracks, telemetry series, and derived usage relationships must remain available from SwiftData-backed local storage offline, after backgrounding, after relaunch, and after same-pilot iCloud sync makes Logbook data available on another device. Interrupted manual entry, location selection, import review, edit, removal, or sync updates must either complete safely or leave the last saved Logbook state intact.
 - **Observability**: Diagnostic events must help identify list load failures, manual save failures, invalid field validation, current-location fallback, location settings link presentation, manual location selection or clearing, import parsing failures, flight time overlap warnings, review draft creation, imported GPS-derived location assignment or fallback, imported save failures, edit failures, removal failures, GPS review failures, telemetry review failures, and recoverable persistence issues without exposing pilot-specific flight details or imported payloads.
-- **Privacy / Data Sensitivity**: Flight start date/times, durations, aircraft references, battery references, manual flight locations, current location used for map defaults, voltage values, mAh values, GPS tracks, telemetry samples, and imported EdgeTX logs are pilot-specific operational data. They must remain local-first, sync only through the pilot's iCloud account for cross-device continuity, and must not be shared outside that account except through explicit pilot action. Original EdgeTX CSV contents must be treated as transient import input and not retained after the import attempt completes.
+- **Privacy / Data Sensitivity**: Flight start date/times, durations, aircraft references, battery references, manual flight locations, current location used for map defaults, distance values, voltage values, mAh values, GPS tracks, telemetry samples, and imported EdgeTX logs are pilot-specific operational data. They must remain local-first, sync only through the pilot's iCloud account for cross-device continuity, and must not be shared outside that account except through explicit pilot action. Original EdgeTX CSV contents must be treated as transient import input and not retained after the import attempt completes.
 - **HIG / Platform Alignment**: The Logbook must follow native iOS navigation, list, form entry, optional location selection, permission recovery, document import, confirmation, feedback, chart, map, and accessibility conventions. Manual location entry must be optional, clear, and nonblocking, including when offering a system settings link for location access. Import review must make automated extraction, including GPS-derived flight location, transparent and correctable before saving. GPS track maps and telemetry line graphs must remain useful with VoiceOver, larger text, reduced motion, and non-visual summaries.
 
 ## Success Criteria *(mandatory)*
@@ -236,8 +247,8 @@ As a pilot, I want to correct or remove saved flight entries so that the logbook
 
 - **SC-001**: A pilot can create a manual flight with active aircraft, active battery, start date/time, duration, and any known battery details in under 2 minutes during validation.
 - **SC-002**: In 100% of validation runs for new manual entries, the flight start date/time defaults to the current local date/time and can be changed to a valid past date/time before saving.
-- **SC-003**: In validation cases covering missing aircraft, missing battery, future start date/time, missing duration, zero duration, negative duration, valid duration, invalid voltage, valid voltage, invalid mAh, valid mAh, and unknown optional battery values, the Logbook accepts or rejects saves according to the specified rules with 100% accuracy.
-- **SC-004**: 100% of saved manual flights continue to show the same aircraft reference, battery reference, start date/time, duration, voltage values, and mAh value after leaving the Logbook and relaunching the app.
+- **SC-003**: In validation cases covering missing aircraft, missing battery, future start date/time, missing duration, zero duration, negative duration, valid duration, invalid distance, valid distance, invalid voltage, valid voltage, invalid mAh, valid mAh, and unknown optional distance or battery values, the Logbook accepts or rejects saves according to the specified rules with 100% accuracy.
+- **SC-004**: 100% of saved manual flights continue to show the same aircraft reference, battery reference, start date/time, duration, optional distance, voltage values, and mAh value after leaving the Logbook and relaunching the app.
 - **SC-005**: For validation EdgeTX logs containing one flight with start date/time, duration, voltage, mAh, GPS, RSSI, and LQ values, import review drafts show all recognized values with 100% accuracy against the known sample data.
 - **SC-006**: In validation EdgeTX imports where aircraft or battery cannot be identified, 100% of review drafts require pilot selection of the missing reference before save.
 - **SC-007**: In validation cases covering valid CSV-with-header, non-CSV, headerless, malformed, empty, unsupported, same-time overlap, no-overlap, no-GPS, no-telemetry, partial-telemetry, and multi-session EdgeTX logs, the import flow initially creates one flight candidate per log file and produces the specified save, split, review, warning, or failure behavior with 100% accuracy.
@@ -255,19 +266,22 @@ As a pilot, I want to correct or remove saved flight entries so that the logbook
 - **SC-019**: In validation flights with absent, single-sample, irregularly timed, gap-containing, and outlier-containing telemetry series, telemetry graph review shows the specified graph or fallback behavior with 100% accuracy.
 - **SC-020**: In validation cases covering manual create, manual edit, EdgeTX import save, and manually split import save attempts with same start date/time, overlapping flight time range, and non-overlapping flight time range, the Logbook warns only for same-time or overlapping ranges and offers working save-anyway and review/edit paths with 100% accuracy.
 - **SC-021**: In validation imports covering saved, cancelled, discarded, and failed EdgeTX CSV attempts, persistent Logbook storage contains the parsed saved flight data when applicable and does not retain the original CSV file contents in 100% of cases.
+- **SC-022**: In validation manual entries and imports with known distance inputs, 100% of saved flights include the saved flight distance available to Pilot Profile totals; manual flights without entered distance and imports without usable GPS distance inputs save with unknown distance.
 
 ## Assumptions
 
 - Flight Logging is scoped to the current pilot using the app; multi-pilot sharing is out of scope for this feature.
 - Same-pilot cross-device sync through iCloud is in scope for the product and will be specified by the dedicated iCloud sync feature.
-- The proposed platform-neutral Flight data model currently defines aircraft and battery as the required core Flight fields. This feature extends that core Flight record with start date/time, duration, flight time range, optional battery usage values, import status, GPS tracks, and telemetry series for Logbook use.
+- The proposed platform-neutral Flight data model currently defines aircraft and battery as the required core Flight fields. This feature extends that core Flight record with start date/time, duration, flight time range, optional battery usage values, optional flight distance, import status, GPS tracks, and telemetry series for Logbook use.
 - Creating aircraft and batteries remains the responsibility of the Hangar and Battery Tracker. The Logbook provides clear blocked states or navigation paths when required active records do not exist.
 - Aircraft, battery, flight start date/time, and flight duration are required for a saved flight.
 - A flight's time range is derived from its start date/time and duration; same or overlapping flight time ranges trigger nonblocking warnings for manual and imported flight save/update attempts.
 - Manual flight location is optional and represents a single pilot-selected location for the flight, not a full GPS track.
+- Manual flight entries may capture optional pilot-entered flight distance. If the pilot leaves distance blank, the saved flight has unknown distance for Pilot Profile total-distance calculations.
 - Current location is used only to default the optional manual flight location map when available; it is not required for saving a manual flight.
 - A system settings link is only used to help the pilot enable location access for the optional map default; it must not make location mandatory for manual flight logging.
 - Imported GPS tracks can derive a flight location automatically. Armed flags are the preferred flight-start signal; first throttle value greater than zero is used only when armed flags are absent.
+- Imported GPS tracks can derive flight distance when enough valid ordered GPS points are available.
 - When neither armed flags nor throttle samples can identify when the aircraft started flying, the imported GPS track remains available but the flight location is not automatically derived.
 - EdgeTX imports initially treat each selected log file as one flight candidate. Splitting a log into multiple flights is an explicit pilot review action.
 - Starting voltage, ending voltage, and mAh used are requested during manual entry but may be left unknown because pilots may not have those values for every flight.
