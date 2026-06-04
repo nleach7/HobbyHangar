@@ -9,7 +9,6 @@
 
 ## Dev environment tips
 
-- Prefix shell commands with `rtk`.
 - Run `./setup.sh` on a new machine. It installs `swiftlint`, installs
   `pre-commit`, copies git hooks, and creates local signing config if needed.
 - Keep local signing overrides in `HobbyHangar/Configuration/User.xcconfig`.
