@@ -69,7 +69,7 @@ Execution steps:
 2. Load the current spec file. Perform a structured ambiguity & coverage scan using this taxonomy. For each category, mark status: Clear / Partial / Missing. Produce an internal coverage map used for prioritization (do not output raw map unless no questions will be asked).
 
    Functional Scope & Behavior:
-   - Core user goals & success criteria
+   - Core user goals & locally verifiable success criteria
    - Explicit out-of-scope declarations
    - User roles / personas differentiation
 
@@ -179,7 +179,7 @@ Execution steps:
        - Functional ambiguity → Update or add a bullet in Functional Requirements.
        - User interaction / actor distinction → Update User Stories or Actors subsection (if present) with clarified role, constraint, or scenario.
        - Data shape / entities → Update Data Model (add fields, types, relationships) preserving ordering; note added constraints succinctly.
-       - Non-functional constraint → Add/modify measurable criteria in Success Criteria > Measurable Outcomes (convert vague adjective to metric or explicit target).
+       - Non-functional constraint → Add/modify locally verifiable measurable criteria in Success Criteria > Measurable Outcomes (convert vague adjective to metric or explicit target, without inventing survey, analytics, support-ticket, or representative-user measures).
        - Edge case / negative flow → Add a new bullet under Edge Cases / Error Handling (or create such subsection if template provides placeholder for it).
        - Terminology conflict → Normalize term across spec; retain original only if necessary by adding `(formerly referred to as "X")` once.
     - If the clarification invalidates an earlier ambiguous statement, replace that statement instead of duplicating; leave no obsolete contradictory text.

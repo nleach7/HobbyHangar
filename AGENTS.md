@@ -9,11 +9,20 @@
 
 ## Dev environment tips
 
-- Prefix shell commands with `rtk`.
 - Run `./setup.sh` on a new machine. It installs `swiftlint`, installs
   `pre-commit`, copies git hooks, and creates local signing config if needed.
 - Keep local signing overrides in `HobbyHangar/Configuration/User.xcconfig`.
   Do not commit local signing changes.
+- All commits must be GPG-signed. Do not use `--no-gpg-sign`. If a Codex
+  session cannot present the GPG passphrase prompt, launch an interactive local
+  shell for the user to enter the passphrase. Prefer iTerm2 via AppleScript when
+  available; fall back to Terminal if iTerm2 is unavailable. In the launched
+  shell, set `GPG_TTY=$(tty)` and pass `-S` explicitly when running
+  `rtk git commit -S ...` or `rtk git commit --amend --no-edit -S`; do not rely
+  on `commit.gpgsign` alone. After committing, verify the latest commit reports
+  a good signature with `rtk git log -1 --show-signature` or `%G?` before
+  reporting success. If a commit is accidentally created unsigned, immediately
+  amend it with `rtk git commit --amend --no-edit -S`.
 
 ## Testing instructions
 
